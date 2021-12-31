@@ -1,6 +1,8 @@
 import Head from "next/head";
 
-export default function MyApp({Component, pageProps}: {Component: any, pageProps: any}) {
+import "../styles/index.scss";
+
+export default function App({Component, pageProps}: {Component: any, pageProps: any}) {
     return (
         <>
             <Head>
@@ -29,10 +31,8 @@ export default function MyApp({Component, pageProps}: {Component: any, pageProps
                 />
                 <link rel="apple-touch-icon" href="/apple-icon.png"/>
                 <meta name="theme-color" content="#317EFB" />
-
-                <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"/>
             </Head>
             <Component {...pageProps} />
         </>
-    )
+    );
 }
