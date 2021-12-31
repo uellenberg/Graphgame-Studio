@@ -1,6 +1,9 @@
 import Head from "next/head";
 
 import "../styles/index.scss";
+import "prismjs/themes/prism-dark.css";
+
+import "../lib/grammar";
 
 const App = ({Component, pageProps}: {Component: any, pageProps: any}) => {
     return (
