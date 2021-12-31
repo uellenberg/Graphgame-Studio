@@ -11,12 +11,14 @@ declare global {
 /*
 The main display component. Handles displaying a Desmos window.
  */
-export default function Display() {
+const Display = React.memo(() => {
     useEffect(() => {
-        if(!window.Calc) window.Calc = window.Desmos.GraphingCalculator(document.getElementById("desmos"), {expressionsCollapsed: false});
+        if(!window.Calc) window.Calc = window.Desmos.GraphingCalculator(document.getElementById("desmos"), {expressionsCollapsed: true});
     }, []);
 
     return (
         <div id="desmos"/>
     );
-}
+});
+
+export default Display;

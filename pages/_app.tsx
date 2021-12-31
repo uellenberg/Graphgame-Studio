@@ -2,7 +2,7 @@ import Head from "next/head";
 
 import "../styles/index.scss";
 
-export default function App({Component, pageProps}: {Component: any, pageProps: any}) {
+const App = ({Component, pageProps}: {Component: any, pageProps: any}) => {
     return (
         <>
             <Head>
@@ -36,3 +36,5 @@ export default function App({Component, pageProps}: {Component: any, pageProps: 
         </>
     );
 }
+
+export default App;
