@@ -17,7 +17,8 @@ const Editor = React.memo(() => {
                 fontFamily: '"Fira code", "Fira Mono", monospace',
                 fontSize: 12,
                 backgroundColor: "#222831",
-                caretColor: "white"
+                caretColor: "white",
+                minHeight: "100%"
             }}
         />
     );
