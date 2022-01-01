@@ -3,6 +3,7 @@ import {Box, Grid} from "@mui/material";
 import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
+import {compile} from "../../lib/compiler/compiler";
 
 const App = () => {
     const [file, setFile] = useState("");
@@ -23,7 +24,7 @@ const App = () => {
                         </Box>
                     </Grid>
                     <Grid item md={4} height="100%" overflow="scroll">
-                        <Editor file={file}/>
+                        <Editor file={file} recompile={() => compile(file)}/>
                     </Grid>
                 </Grid>
             </Box>
