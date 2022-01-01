@@ -5,7 +5,6 @@ import { highlight, languages } from "prismjs";
 
 const Editor = React.memo(() => {
     const [code, setCode] = useState("")
-    console.log(languages.logimat);
 
     return (
         <CodeEditor
