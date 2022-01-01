@@ -2,6 +2,7 @@ import React from "react";
 import {Box, Grid} from "@mui/material";
 import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
+import Files from "../Files/Files";
 
 const App = () => {
   return (
@@ -16,7 +17,7 @@ const App = () => {
                       <Display/>
                   </Box>
                   <Box height="40%">
-
+                      <Files/>
                   </Box>
               </Grid>
               <Grid item md={4} height="100%" overflow="scroll">

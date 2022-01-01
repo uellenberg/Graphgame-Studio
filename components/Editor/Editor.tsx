@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import CodeEditor from "react-simple-code-editor";
-//@ts-ignore
 import { highlight, languages } from "prismjs";
 
 const Editor = React.memo(() => {

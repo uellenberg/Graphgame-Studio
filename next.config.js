@@ -1,6 +1,6 @@
 const withPWA = require('next-pwa')
 const runtimeCaching = require('next-pwa/cache')
-const { FilerWebpackPlugin } = require('filer/webpack')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 module.exports = withPWA({
     pwa: {
@@ -8,6 +8,6 @@ module.exports = withPWA({
         runtimeCaching,
     },
     plugins: [
-        new FilerWebpackPlugin(),
+        new NodePolyfillPlugin(),
     ],
 })

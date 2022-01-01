@@ -4,6 +4,7 @@ import "../styles/index.scss";
 import "prismjs/themes/prism-dark.css";
 
 import "../lib/grammar";
+import "../lib/files";
 
 const App = ({Component, pageProps}: {Component: any, pageProps: any}) => {
     return (
