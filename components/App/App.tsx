@@ -3,7 +3,7 @@ import {Box, Grid} from "@mui/material";
 import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
-import {compile} from "../../lib/compiler/compiler";
+import {compile} from "../../lib/compiler";
 
 const App = () => {
     const [file, setFile] = useState("");
