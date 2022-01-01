@@ -17,6 +17,7 @@ if (typeof window !== "undefined") {
 export const fs: FSModule = typeof window !== "undefined" ? BrowserFS.BFSRequire("fs") : <FSModule>{};
 
 export const readdir = typeof window !== "undefined" ? util.promisify(fs.readdir) : () => {};
+export const readFile = typeof window !== "undefined" ? util.promisify(fs.readFile) : () => {};
 export const lstat = typeof window !== "undefined" ? util.promisify(fs.lstat) : () => {};
 export const mkdir = typeof window !== "undefined" ? util.promisify(fs.mkdir) : () => {};
 export const unlink = typeof window !== "undefined" ? util.promisify(fs.unlink) : () => {};

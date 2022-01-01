@@ -17,11 +17,11 @@ import * as Path from "path";
 import {
     FileUploadedEvent, ItemDeletedEvent,
     ItemDownloadingEvent, ItemMovedEvent,
-    ItemRenamedEvent,
+    ItemRenamedEvent, SelectedFileOpenedEvent,
     ToolbarItemClickEvent
 } from "devextreme/ui/file_manager";
 
-const Files = () => {
+const Files = ({setFile}: {setFile: (file: string) => void}) => {
     const [fs, setFS] = useState<FileTree | null>(null);
 
     useEffect(() => {
@@ -177,6 +177,13 @@ const Files = () => {
         }
     };
 
+    const onOpen = (e: SelectedFileOpenedEvent) => {
+        //Only allow opening .lm files.
+        if(!e.file.name.endsWith(".lm")) return;
+
+        setFile(e.file.path);
+    };
+
     return (
         <FileManager fileSystemProvider={fs || []} height="100%" permissions={{
             //TODO: Fix copy
@@ -188,7 +195,7 @@ const Files = () => {
             rename: true,
             upload: true,
             delete: true
-        }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete}>
+        }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen}>
             <Toolbar>
                 <Item name="showNavPane" visible="true" />
                 <Item name="separator" />
