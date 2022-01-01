@@ -179,7 +179,7 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
 
     const onOpen = (e: SelectedFileOpenedEvent) => {
         //Only allow opening .lm files.
-        if(!e.file.name.endsWith(".lm")) return;
+        if(!["", ".lm", ".txt", ".gitignore"].includes(Path.extname(e.file.name))) return;
 
         setFile(e.file.path);
     };

@@ -41,7 +41,6 @@ const Editor = ({file}: {file: string}) => {
             if(!file) {
                 return;
             }
-            console.log("success")
 
             //Write the code to the file.
             await writeFile(file, code);
@@ -54,7 +53,7 @@ const Editor = ({file}: {file: string}) => {
         <CodeEditor
             value={code}
             onValueChange={code => setCode(code)}
-            highlight={code => highlight(code, languages.logimat, "logimat")}
+            highlight={code => file.endsWith(".lm") ? highlight(code, languages.logimat, "logimat") : code}
             padding={10}
             style={{
                 fontFamily: '"Fira code", "Fira Mono", monospace',
