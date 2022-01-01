@@ -3,11 +3,12 @@ import "prismjs/components/prism-clike";
 
 Prism.languages.logimat = Prism.languages.extend("clike", {
     "keyword": [
-        /\b(?:export|inline|const|function|action|actions|expression|graph|point|array|polygon|state|sum|prod|if|else|true|false|null|color|display)\b/g
+        /\b(?:import|from|export|inline|const|function|action|actions|expression|graph|point|array|polygon|state|sum|prod|if|else|true|false|null|color|display)\b/g
     ],
     "function": [
         //Template
-        /[a-zA-Z_]+!/g
+        /[a-zA-Z_]+!/g,
+        /\b(?:)templates\b/g
     ],
     "operator": />=|<=|==|!=|&&|\|\||[-+*/%^!<>]/,
     //@ts-ignore
