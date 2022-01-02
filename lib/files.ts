@@ -72,27 +72,6 @@ export const rmdirRecursive = async (path: string) : Promise<void> => {
     await rmdir(path);
 }
 
-export const FindMain = async (path: string) : Promise<string | null> => {
-    let folderPath = Path.dirname(path);
-
-    let searchPath = "/";
-    let mainPath = "";
-
-    //This goes through the directory tree, starting at the lowest directory.
-    //In each directory, we search for a main.lm, and save it. In the end,
-    //the closest main.lm to where we are will be the one output.
-    for (const dir of folderPath.split(/\//g)) {
-        const path = Path.resolve(searchPath, dir);
-
-        if((await readdir(path))?.includes("main.lm")) mainPath = Path.join(path, "main.lm");
-
-        searchPath = path;
-    }
-
-    if(!mainPath) return null;
-    return mainPath;
-}
-
 export const GetTree = async () : Promise<FileTree> => {
     if (typeof window === "undefined") {
         return [];

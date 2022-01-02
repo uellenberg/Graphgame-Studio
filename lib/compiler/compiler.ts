@@ -1,23 +1,18 @@
 import {Compile, TemplateModule} from "logimat";
-import {FindMain, readFile} from "./files";
 import * as Path from "path";
 import * as graphgame from "graphgame";
-import {DragMode, ExpressionState, ListState, State} from "./desmosState";
-import {Calculator, Desmos} from "./desmos";
-
-declare global {
-    interface Window {
-        Calc: Calculator;
-        Desmos: Desmos;
-    }
-}
+import {DragMode, ExpressionState, ListState, State} from "../desmosState";
+import {readdir, readFile} from "./worker-files";
 
 let simplificationMap: Record<string, string> = {};
 
-export const compile = async (path: string) : Promise<void> => {
+let oldMain = "";
+
+export const compile = async (path: string, force = false) : Promise<ListState | null> => {
     //Search for a main file directly under us.
-    const main = await FindMain(path);
-    if(!main) return;
+    const main = await findMain(path);
+    if(!main || (!force && main === oldMain)) return null;
+    oldMain = main;
 
     //Compile the main file, supplying graphgame as an import.
     //Simplification map allows us to skip simplification for items that have already been simplified, in order to drastically reduce compile time.
@@ -46,10 +41,28 @@ export const compile = async (path: string) : Promise<void> => {
         }
     }
 
-    const oldState = window.Calc.getState();
-    oldState.expressions.list = expressionsState;
+    return expressionsState;
+}
 
-    window.Calc.setState(oldState);
+const findMain = async (path: string) : Promise<string | null> => {
+    let folderPath = Path.dirname(path);
+
+    let searchPath = "/";
+    let mainPath = "";
+
+    //This goes through the directory tree, starting at the lowest directory.
+    //In each directory, we search for a main.lm, and save it. In the end,
+    //the closest main.lm to where we are will be the one output.
+    for (const dir of folderPath.split(/\//g)) {
+        const path = Path.resolve(searchPath, dir);
+
+        if((await readdir(path))?.includes("main.lm")) mainPath = Path.join(path, "main.lm");
+
+        searchPath = path;
+    }
+
+    if(!mainPath) return null;
+    return mainPath;
 }
 
 const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {

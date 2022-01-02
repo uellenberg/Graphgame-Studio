@@ -1,12 +1,38 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Box, Grid} from "@mui/material";
 import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
-import {compile} from "../../lib/compiler";
+
+declare const BrowserFS: any;
 
 const App = () => {
+    const workerRef = useRef<Worker>();
+    useEffect(() => {
+        workerRef.current = new Worker(new URL("../../lib/compiler/compile-worker", import.meta.url));
+        workerRef.current.onmessage = msg => {
+            if(!msg.data.desmosMessage || !msg.data.data) return;
+
+            const state = window.Calc.getState();
+            state.expressions.list = msg.data.data;
+
+            console.log(msg.data);
+            window.Calc.setState(state);
+        };
+        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(workerRef.current);
+
+        return () => {
+            //Kill the worker when the component unmounts.
+            workerRef.current?.terminate();
+            workerRef.current = undefined;
+        };
+    }, []);
+
     const [file, setFile] = useState("");
+
+    const recompile = (force: boolean) => {
+        workerRef.current?.postMessage({desmosMessage: true, file, force});
+    };
 
     return (
         <>
@@ -24,7 +50,7 @@ const App = () => {
                         </Box>
                     </Grid>
                     <Grid item md={4} height="100%" overflow="scroll">
-                        <Editor file={file} recompile={() => compile(file)}/>
+                        <Editor file={file} recompile={recompile}/>
                     </Grid>
                 </Grid>
             </Box>
