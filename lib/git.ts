@@ -2,7 +2,7 @@ import git, {GitAuth} from "isomorphic-git";
 import {fs} from "./files";
 import http from "isomorphic-git/http/web";
 
-export const Clone = async (repo: string, folder: string, auth: () => Promise<GitAuth>) : Promise<void> => {
+export const Clone = async (repo: string, folder: string, auth: () => Promise<GitAuth>, done: () => void) : Promise<void> => {
     await git.clone({
         fs,
         http,
@@ -20,5 +20,5 @@ export const Clone = async (repo: string, folder: string, auth: () => Promise<Gi
         onAuthFailure: () => auth()
     });
 
-    console.log("complete")
+    done();
 }

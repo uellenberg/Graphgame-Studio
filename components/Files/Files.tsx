@@ -28,11 +28,15 @@ import GithubClone from "./GithubClone";
 const Files = ({setFile}: {setFile: (file: string) => void}) => {
     const [fsData, setFSData] = useState<FileTree | null>(null);
 
-    useEffect(() => {
+    const refresh = () => {
         GetTree().then(val => {
             setFSData(val);
             fileManagerRef.current?.instance.refresh();
         });
+    };
+
+    useEffect(() => {
+        refresh();
     }, []);
 
     const fileManagerRef = React.createRef<FileManager>();
@@ -172,6 +176,8 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
                 //Finally, open the dialog.
                 setGithubAuthOpen(true);
             });
+        }, () => {
+            refresh();
         });
     }
 
