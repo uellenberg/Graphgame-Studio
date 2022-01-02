@@ -16,6 +16,11 @@ const App = () => {
 
             const state = window.Calc.getState();
             state.expressions.list = msg.data.data;
+            state.expressions.ticker = {
+                handlerLatex: "m_{ain}",
+                open: true,
+                playing: true
+            };
 
             console.log(msg.data);
             window.Calc.setState(state);
