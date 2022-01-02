@@ -5,8 +5,15 @@ import "prismjs/themes/prism-dark.css";
 
 import "../lib/grammar";
 import "../lib/files";
+import {createTheme, ThemeProvider} from "@mui/material";
 
 const App = ({Component, pageProps}: {Component: any, pageProps: any}) => {
+    const theme = createTheme({
+        palette: {
+            mode: "dark"
+        },
+    });
+
     return (
         <>
             <Head>
@@ -36,7 +43,9 @@ const App = ({Component, pageProps}: {Component: any, pageProps: any}) => {
                 <link rel="apple-touch-icon" href="/apple-icon.png"/>
                 <meta name="theme-color" content="#317EFB" />
             </Head>
-            <Component {...pageProps} />
+            <ThemeProvider theme={theme}>
+                <Component {...pageProps} />
+            </ThemeProvider>
         </>
     );
 }
