@@ -1,38 +1,25 @@
 import React, {useEffect, useRef, useState} from "react";
 import CodeEditor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
-import {readFile, writeFile} from "../../lib/files";
+import {lstat, readFile, writeFile} from "../../lib/files";
 
 const Editor = ({file, recompile}: {file: string, recompile: () => void}) => {
     const [code, setCode] = useState("");
-
-    const prevFile = useRef<string>();
 
     //Switch to the new file when it changes.
     useEffect(() => {
         if(!file) return;
 
-        //Store the current code.
-        const curCode = code;
-        setCode("");
-
         const load = async () => {
-            //Save the current code to the previous file.
-            if(prevFile.current) await writeFile(prevFile.current, curCode);
-            recompile();
-
             //Get the new code.
             const newCode = (await readFile(file) as Buffer)?.toString();
             //Update the current code.
             setCode(newCode);
+
+            recompile();
         };
 
         load();
-    }, [file]);
-
-    //Save the previous file.
-    useEffect(() => {
-        prevFile.current = file;
     }, [file]);
 
     //Save the code when it updates.

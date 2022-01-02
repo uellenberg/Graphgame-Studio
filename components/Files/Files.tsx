@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {FileManager} from "devextreme-react";
 import {
     exists,
@@ -20,13 +20,17 @@ import {
     ItemRenamedEvent, SelectedFileOpenedEvent,
     ToolbarItemClickEvent
 } from "devextreme/ui/file_manager";
+import {Clone} from "../../lib/git";
+import GithubAuth from "./GithubAuth";
+import {GitAuth} from "isomorphic-git";
+import GithubClone from "./GithubClone";
 
 const Files = ({setFile}: {setFile: (file: string) => void}) => {
-    const [fs, setFS] = useState<FileTree | null>(null);
+    const [fsData, setFSData] = useState<FileTree | null>(null);
 
     useEffect(() => {
         GetTree().then(val => {
-            setFS(val);
+            setFSData(val);
             fileManagerRef.current?.instance.refresh();
         });
     }, []);
@@ -36,14 +40,13 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
     const onAddClick = ({itemData, viewArea, fileSystemItem}: {itemData: any, viewArea: any, fileSystemItem: any}) => {
         createFile(itemData.extension as string, fileSystemItem).then(val => {
             if(val) {
-                setFS(fs);
+                setFSData(fsData);
                 fileManagerRef.current?.instance.refresh();
             }
         });
     };
 
     const createFile = async (fileExtension: string, directory = fileManagerRef.current?.instance.getCurrentDirectory()) => {
-        console.log(directory)
         if (!directory.isDirectory || !fileExtension) {
             return false;
         }
@@ -69,8 +72,8 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
 
         let array: FileTree = null as unknown as FileTree;
         if (!directory.dataItem) {
-            if(!fs) return false;
-            array = fs;
+            if(!fsData) return false;
+            array = fsData;
         } else {
             array = directory.dataItem.items;
             if (!array) {
@@ -112,6 +115,74 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
             },
         ],
         onItemClick: onAddClick,
+    };
+
+    const [githubCloneOpen, setGithubCloneOpen] = useState(false);
+    const githubCloneReturn = useRef<(auth: [string, string] | null) => void>(() => {});
+
+    const [githubAuthOpen, setGithubAuthOpen] = useState(false);
+    const githubAuthReturn = useRef<(auth: string | null) => void>(() => {});
+
+    const onCloneRepository = async ({itemData, viewArea, fileSystemItem}: {itemData: any, viewArea: any, fileSystemItem: any}) => {
+        const directory = fileManagerRef.current?.instance.getCurrentDirectory();
+        if(!directory?.isDirectory) return;
+
+
+        //First, create a new function that will be called when the data is entered.
+        //We don't run the old function here because it doesn't have any outstanding promise to resolve.
+        githubCloneReturn.current = (val: [string, string] | null) => {
+            //Close the dialog when it is submitted.
+            setGithubCloneOpen(false);
+
+            //If no data is returned, don't do anything.
+            if(!val) return;
+
+            //Clone the specified repository.
+            clone(val[0], directory?.path || "", val[1]);
+        };
+
+        //Finally, open the dialog.
+        setGithubCloneOpen(true);
+    }
+
+    const clone = async (url: string, curDir: string, folder: string) => {
+        const path = Path.join("/" + curDir, folder);
+        await mkdirRecursive(path);
+
+        Clone(url, path, () => {
+            return new Promise<GitAuth>((resolve, reject) => {
+                //First, resolve the current function.
+                githubAuthReturn.current(null);
+                //Next, create a new function that will resolve the promise when called.
+                githubAuthReturn.current = (val: string | null) => {
+                    //Close the dialog when it is submitted.
+                    setGithubAuthOpen(false);
+
+                    if(val) {
+                        //If a value was provided, save the key and return it.
+                        localStorage.setItem("gh-token", val);
+                        resolve({username: val, password: "x-oauth-basic"});
+                    } else {
+                        //Otherwise, return null.
+                        // @ts-ignore
+                        resolve(null);
+                    }
+                };
+
+                //Finally, open the dialog.
+                setGithubAuthOpen(true);
+            });
+        });
+    }
+
+    const cloneRepoOptions = {
+        items: [
+            {
+                text: "Clone repository",
+                icon: "download",
+            },
+        ],
+        onItemClick: onCloneRepository,
     };
 
     const onFileUpload = async (e: FileUploadedEvent) => {
@@ -185,34 +256,39 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
     };
 
     return (
-        <FileManager fileSystemProvider={fs || []} height="100%" permissions={{
-            //TODO: Fix copy
-            copy: false,
-            create: true,
-            //TODO: Fix downloads
-            download: false,
-            move: true,
-            rename: true,
-            upload: true,
-            delete: true
-        }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen}>
-            <Toolbar>
-                <Item name="showNavPane" visible="true" />
-                <Item name="separator" />
-                <Item name="create" />
-                <Item widget="dxMenu" location="before" options={newFileMenuOptions} />
-                <Item name="refresh" />
-                <Item name="separator" location="after" />
-                <Item name="switchView" />
+        <>
+            <FileManager fileSystemProvider={fsData || []} height="100%" permissions={{
+                //TODO: Fix copy
+                copy: false,
+                create: true,
+                //TODO: Fix downloads
+                download: false,
+                move: true,
+                rename: true,
+                upload: true,
+                delete: true
+            }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen}>
+                <Toolbar>
+                    <Item name="showNavPane" visible="true" />
+                    <Item name="separator" />
+                    <Item name="create" />
+                    <Item widget="dxMenu" location="before" options={newFileMenuOptions} />
+                    <Item widget="dxMenu" location="before" options={cloneRepoOptions} />
+                    <Item name="refresh" />
+                    <Item name="separator" location="after" />
+                    <Item name="switchView" />
 
-                <FileSelectionItem name="rename" />
-                <FileSelectionItem name="separator" />
-                <FileSelectionItem name="delete" />
-                <FileSelectionItem name="separator" />
-                <FileSelectionItem name="refresh" />
-                <FileSelectionItem name="clearSelection" />
-            </Toolbar>
-        </FileManager>
+                    <FileSelectionItem name="rename" />
+                    <FileSelectionItem name="separator" />
+                    <FileSelectionItem name="delete" />
+                    <FileSelectionItem name="separator" />
+                    <FileSelectionItem name="refresh" />
+                    <FileSelectionItem name="clearSelection" />
+                </Toolbar>
+            </FileManager>
+            <GithubClone open={githubCloneOpen} submit={githubCloneReturn.current}/>
+            <GithubAuth open={githubAuthOpen} submit={githubAuthReturn.current}/>
+        </>
     );
 };
 
