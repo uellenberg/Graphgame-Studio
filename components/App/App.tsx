@@ -8,11 +8,24 @@ import Compile from "../Compile/Compile";
 declare const BrowserFS: any;
 
 const App = () => {
+    const [compileDisabled, setCompileDisabled] = useState(false);
+
     const workerRef = useRef<Worker>();
     useEffect(() => {
         workerRef.current = new Worker(new URL("../../lib/compiler/compile-worker", import.meta.url));
         workerRef.current.onmessage = msg => {
-            if(!msg.data.desmosMessage || !msg.data.data) return;
+            if(!msg.data.desmosMessage) return;
+
+            //Allow recompiling if the compile fails.
+            if(msg.data.fail) {
+                setCompileDisabled(false);
+                return;
+            }
+            if(msg.data.compiling) {
+                setCompileDisabled(true);
+                return;
+            }
+            if(!msg.data.data) return;
 
             const state = window.Calc.getState();
             state.expressions.list = msg.data.data;
@@ -22,8 +35,9 @@ const App = () => {
                 playing: true
             };
 
-            console.log(msg.data);
             window.Calc.setState(state);
+
+            setCompileDisabled(false);
         };
         BrowserFS.FileSystem.WorkerFS.attachRemoteListener(workerRef.current);
 
@@ -60,7 +74,7 @@ const App = () => {
                             <Editor file={file}/>
                         </Box>
                         <Box height="10%" display="flex">
-                            <Compile compile={compile}/>
+                            <Compile disabled={compileDisabled} compile={compile}/>
                         </Box>
                     </Grid>
                 </Grid>

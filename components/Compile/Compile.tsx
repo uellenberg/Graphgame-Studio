@@ -1,8 +1,8 @@
 import {Button} from "@mui/material";
 
-const Compile = ({compile}: {compile: (force: boolean) => void}) => {
+const Compile = ({disabled, compile}: {disabled: boolean, compile: (force: boolean) => void}) => {
     return (
-        <Button variant="contained" onClick={() => compile(true)}>
+        <Button variant="contained" disabled={disabled} onClick={() => compile(true)} style={{margin: "auto"}}>
             Compile
         </Button>
     );
