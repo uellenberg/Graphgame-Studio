@@ -3,6 +3,7 @@ import {Box, Grid} from "@mui/material";
 import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
+import Compile from "../Compile/Compile";
 
 declare const BrowserFS: any;
 
@@ -30,7 +31,7 @@ const App = () => {
 
     const [file, setFile] = useState("");
 
-    const recompile = (force: boolean) => {
+    const compile = (force: boolean) => {
         workerRef.current?.postMessage({desmosMessage: true, file, force});
     };
 
@@ -49,8 +50,13 @@ const App = () => {
                             <Files setFile={setFile}/>
                         </Box>
                     </Grid>
-                    <Grid item md={4} height="100%" overflow="scroll">
-                        <Editor file={file} recompile={recompile}/>
+                    <Grid item md={4} height="100%">
+                        <Box height="90%" style={{overflowY: "scroll"}}>
+                            <Editor file={file}/>
+                        </Box>
+                        <Box height="10%" display="flex">
+                            <Compile compile={compile}/>
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>

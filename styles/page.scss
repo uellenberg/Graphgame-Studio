@@ -5,3 +5,13 @@ html, body, #__next {
   padding: 0;
   background-color: #181717;
 }
+
+:root{
+  color-scheme: dark;
+  scrollbar-color: #0079D3 #2E3645 !important;
+  scrollbar-width: thin !important;
+}
+
+* {
+  scrollbar-width: thin !important;
+}

@@ -3,7 +3,7 @@ import CodeEditor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import {lstat, readFile, writeFile} from "../../lib/files";
 
-const Editor = ({file, recompile}: {file: string, recompile: (force: boolean) => void}) => {
+const Editor = ({file}: {file: string}) => {
     const [code, setCode] = useState("");
 
     //Switch to the new file when it changes.
@@ -15,10 +15,6 @@ const Editor = ({file, recompile}: {file: string, recompile: (force: boolean) =>
             const newCode = (await readFile(file) as Buffer)?.toString();
             //Update the current code.
             setCode(newCode);
-
-            setTimeout(() => {
-                recompile(false);
-            }, 1);
         };
 
         load();
@@ -34,10 +30,6 @@ const Editor = ({file, recompile}: {file: string, recompile: (force: boolean) =>
 
             //Write the code to the file.
             await writeFile(file, code);
-
-            setTimeout(() => {
-                recompile(true);
-            }, 1);
         };
 
         save();
