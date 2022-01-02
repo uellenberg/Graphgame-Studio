@@ -27,3 +27,6 @@ yarn-error.log*
 dist/
 out/
 .next/
+
+public/sw.js
+public/workbox*.js
