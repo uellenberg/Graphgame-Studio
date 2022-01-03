@@ -48,21 +48,19 @@ const findMain = async (path: string) : Promise<string | null> => {
     let folderPath = Path.dirname(path);
 
     let searchPath = "/";
-    let mainPath = "";
 
     //This goes through the directory tree, starting at the lowest directory.
-    //In each directory, we search for a main.lm, and save it. In the end,
-    //the closest main.lm to where we are will be the one output.
+    //In each directory, we search for a main.lm, and if we find one, we return it.
+    //If we don't, we go up a level. If in the end there is no main, we return null.
     for (const dir of folderPath.split(/\//g)) {
         const path = Path.resolve(searchPath, dir);
 
-        if((await readdir(path))?.includes("main.lm")) mainPath = Path.join(path, "main.lm");
+        if((await readdir(path))?.includes("main.lm")) return Path.join(path, "main.lm");
 
         searchPath = path;
     }
 
-    if(!mainPath) return null;
-    return mainPath;
+    return null;
 }
 
 const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
