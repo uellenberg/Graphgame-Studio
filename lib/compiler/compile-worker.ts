@@ -7,8 +7,6 @@ let compiling = false;
 self.onmessage = async (msg) => {
     if(!msg.data.desmosMessage) return;
 
-    console.log("received", msg.data);
-
     switch(msg.data.type) {
         case "compile":
             if(compiling) return;

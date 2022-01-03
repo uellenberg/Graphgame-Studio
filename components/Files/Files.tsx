@@ -20,10 +20,12 @@ import {
     ItemRenamedEvent, SelectedFileOpenedEvent,
     ToolbarItemClickEvent
 } from "devextreme/ui/file_manager";
-import {Clone} from "../../lib/git";
+import {Clone, Commit, GetGitDir, IsUserSetup, Pull, SetupUser} from "../../lib/git";
 import GithubAuth from "./GithubAuth";
 import {GitAuth} from "isomorphic-git";
 import GithubClone from "./GithubClone";
+import GithubCommit from "./GithubCommit";
+import GithubDetails from "./GithubDetails";
 
 const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void, resetFile: (file: string) => Promise<void>, resetAll: () => Promise<void>}) => {
     const [fsData, setFSData] = useState<FileTree | null>(null);
@@ -42,6 +44,9 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
     const fileManagerRef = React.createRef<FileManager>();
 
     const onAddClick = ({itemData, viewArea, fileSystemItem}: {itemData: any, viewArea: any, fileSystemItem: any}) => {
+        //Make sure we are clicking an option and not the main button.
+        if(!itemData.extension) return;
+
         createFile(itemData.extension as string, fileSystemItem).then(file => {
             if(file) {
                 refresh();
@@ -129,69 +134,171 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
     const [githubAuthOpen, setGithubAuthOpen] = useState(false);
     const githubAuthReturn = useRef<(auth: string | null) => void>(() => {});
 
-    const onCloneRepository = async ({itemData, viewArea, fileSystemItem}: {itemData: any, viewArea: any, fileSystemItem: any}) => {
+    const [githubDetailsOpen, setGithubDetailsOpen] = useState(false);
+    const githubDetailsReturn = useRef<(auth: [string, string] | null) => void>(() => {});
+
+    const [githubCommitOpen, setGithubCommitOpen] = useState(false);
+    const githubCommitReturn = useRef<(auth: string | null) => void>(() => {});
+
+    const onGithubClick = async ({itemData, viewArea, fileSystemItem}: {itemData: any, viewArea: any, fileSystemItem: any}) => {
+        //Make sure we are clicking an option and not the main button.
+        if(!itemData.type) return;
+
         const directory = fileManagerRef.current?.instance.getCurrentDirectory();
         if(!directory?.isDirectory) return;
 
+        const path = directory?.path || "";
 
-        //First, create a new function that will be called when the data is entered.
-        //We don't run the old function here because it doesn't have any outstanding promise to resolve.
-        githubCloneReturn.current = (val: [string, string] | null) => {
-            //Close the dialog when it is submitted.
-            setGithubCloneOpen(false);
+        switch(itemData.type) {
+            case "clone":
+                //First, create a new function that will be called when the data is entered.
+                //We don't run the old function here because it doesn't have any outstanding promise to resolve.
+                githubCloneReturn.current = async (val: [string, string] | null) => {
+                    //Close the dialog when it is submitted.
+                    setGithubCloneOpen(false);
 
-            //If no data is returned, don't do anything.
-            if(!val) return;
+                    //If no data is returned, don't do anything.
+                    if(!val) return;
 
-            //Clone the specified repository.
-            clone(val[0], directory?.path || "", val[1]);
-        };
+                    //Clone the specified repository.
+                    await clone(val[0], path, val[1]);
+                    //TODO: Use clone to send message to user.
+                };
 
-        //Finally, open the dialog.
-        setGithubCloneOpen(true);
-    }
+                //Finally, open the dialog.
+                setGithubCloneOpen(true);
+                break;
+            case "commit":
+                //First, we need to get the git directory.
+                const gitDir = await GetGitDir(path);
+                //If there is no git directory, we can't commit, so return.
+                if(!gitDir) return;
+
+                //Next, we need to ensure that the user has entered their details.
+                //If entering them fails, we can return.
+                if(!(await ensureAccountDetails(gitDir))) return;
+
+                //Finally, create a new function that will be called when the data is entered.
+                //We don't run the old function here because it doesn't have any outstanding promise to resolve.
+                githubCommitReturn.current = async (val: string | null) => {
+                    //Close the dialog when it is submitted.
+                    setGithubCommitOpen(false);
+
+                    //If no data is returned, don't do anything.
+                    if(!val) return;
+
+                    //Clone the specified repository.
+                    await Commit(gitDir, val, auth);
+                    //TODO: Use commit output to send message to user.
+                };
+
+                //Finally, open the dialog.
+                setGithubCommitOpen(true);
+                break;
+            case "pull":
+                //First, we need to get the git directory.
+                const gitDir1 = await GetGitDir(path);
+                //If there is no git directory, we can't commit, so return.
+                if(!gitDir1) return;
+
+                //Next, we need to ensure that the user has entered their details.
+                //If entering them fails, we can return.
+                if(!(await ensureAccountDetails(gitDir1))) return;
+
+                await Pull(gitDir1, auth);
+                //TODO: Use pull to send message to user.
+
+                //Reset the file to avoid overrides.
+                setFile("");
+                break;
+        }
+    };
+
+    const auth = () : Promise<GitAuth> => {
+        return new Promise<GitAuth>((resolve, reject) => {
+            //First, resolve the current function.
+            githubAuthReturn.current(null);
+            //Next, create a new function that will resolve the promise when called.
+            githubAuthReturn.current = (val: string | null) => {
+                //Close the dialog when it is submitted.
+                setGithubAuthOpen(false);
+
+                if(val) {
+                    //If a value was provided, save the key and return it.
+                    localStorage.setItem("gh-token", val);
+                    resolve({username: val, password: "x-oauth-basic"});
+                } else {
+                    //Otherwise, return null.
+                    // @ts-ignore
+                    resolve(null);
+                }
+            };
+
+            //Finally, open the dialog.
+            setGithubAuthOpen(true);
+        });
+    };
 
     const clone = async (url: string, curDir: string, folder: string) => {
         const path = Path.join("/" + curDir, folder);
         await mkdirRecursive(path);
 
-        Clone(url, path, () => {
-            return new Promise<GitAuth>((resolve, reject) => {
-                //First, resolve the current function.
-                githubAuthReturn.current(null);
-                //Next, create a new function that will resolve the promise when called.
-                githubAuthReturn.current = (val: string | null) => {
-                    //Close the dialog when it is submitted.
-                    setGithubAuthOpen(false);
+        await Clone(url, path, auth);
 
-                    if(val) {
-                        //If a value was provided, save the key and return it.
-                        localStorage.setItem("gh-token", val);
-                        resolve({username: val, password: "x-oauth-basic"});
-                    } else {
-                        //Otherwise, return null.
-                        // @ts-ignore
-                        resolve(null);
-                    }
-                };
+        refresh();
+        resetAll();
+    };
 
-                //Finally, open the dialog.
-                setGithubAuthOpen(true);
-            });
-        }, () => {
-            refresh();
-            resetAll();
+    const ensureAccountDetails = async (gitDir: string) : Promise<boolean> => {
+        return new Promise<boolean>(async (resolve, reject) => {
+            //If the user is setup, we don't have to request their details.
+            if(await IsUserSetup(gitDir)) return resolve(true);
+
+            //First, resolve the current function.
+            githubDetailsReturn.current(null);
+            //Next, create a new function that will resolve the promise when called.
+            githubDetailsReturn.current = async (val: [string, string] | null) => {
+                //Close the dialog when it is submitted.
+                setGithubDetailsOpen(false);
+
+                if(val) {
+                    //If a value was provided, save it and return true.
+                    await SetupUser(gitDir, val[0], val[1]);
+                    resolve(true);
+                } else {
+                    //Otherwise, return false.
+                    // @ts-ignore
+                    resolve(false);
+                }
+            };
+
+            //Finally, open the dialog.
+            setGithubDetailsOpen(true);
         });
-    }
+    };
 
-    const cloneRepoOptions = {
+    const githubOptions = {
         items: [
             {
-                text: "Clone repository",
+                text: "Github",
                 icon: "download",
+                items: [
+                    {
+                        text: "Clone",
+                        type: "clone"
+                    },
+                    {
+                        text: "Commit",
+                        type: "commit"
+                    },
+                    {
+                        text: "Pull",
+                        type: "pull"
+                    },
+                ],
             },
         ],
-        onItemClick: onCloneRepository,
+        onItemClick: onGithubClick,
     };
 
     const onFileUpload = async (e: FileUploadedEvent) => {
@@ -301,7 +408,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                     <Item name="separator" />
                     <Item name="create" />
                     <Item widget="dxMenu" location="before" options={newFileMenuOptions} />
-                    <Item widget="dxMenu" location="before" options={cloneRepoOptions} />
+                    <Item widget="dxMenu" location="before" options={githubOptions} />
                     <Item name="refresh" />
                     <Item name="separator" location="after" />
                     <Item name="switchView" />
@@ -316,6 +423,8 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
             </FileManager>
             <GithubClone open={githubCloneOpen} submit={githubCloneReturn.current}/>
             <GithubAuth open={githubAuthOpen} submit={githubAuthReturn.current}/>
+            <GithubCommit open={githubCommitOpen} submit={githubCommitReturn.current}/>
+            <GithubDetails open={githubDetailsOpen} submit={githubDetailsReturn.current}/>
         </>
     );
 };

@@ -8,7 +8,11 @@ const Editor = ({file, resetFile}: {file: string, resetFile: (file: string) => P
 
     //Switch to the new file when it changes.
     useEffect(() => {
-        if(!file) return;
+        //Reset the code if the file resets.
+        if(!file) {
+            setCode("");
+            return;
+        }
 
         const load = async () => {
             //Get the new code.
@@ -22,12 +26,10 @@ const Editor = ({file, resetFile}: {file: string, resetFile: (file: string) => P
 
     //Save the code when it updates.
     useEffect(() => {
-        const save = async () => {
-            //Only save data if we're on a file.
-            if(!file) {
-                return;
-            }
+        //Only save data if we're on a file.
+        if(!file) return;
 
+        const save = async () => {
             //Write the code to the file.
             await writeFile(file, code);
         };

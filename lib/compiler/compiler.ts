@@ -15,17 +15,11 @@ export const compile = async (main: string) : Promise<ListState | null> => {
     //Return if we don't have a main, return nothing.
     if(!main) return null;
 
-    console.log("compiling");
-
-    console.log("import1", importMap);
-
     //If the main changed, reset our input and simplification maps.
     if(oldMain !== main) {
         simplificationMap = {};
         ResetImports();
     }
-
-    console.log("import2", importMap)
 
     oldMain = main;
 
@@ -33,7 +27,6 @@ export const compile = async (main: string) : Promise<ListState | null> => {
     //Simplification map allows us to skip simplification for items that have already been simplified, in order to drastically reduce compile time.
     const output = <{output: string[], simplificationMap: Record<string, string>, importMap: Record<string, TemplateModule | string>}>(await Compile((await readFile(main) as Buffer)?.toString() || "", false, false, Path.resolve(Path.dirname(main)), true, true, true, Object.assign({}, simplificationMap), Object.assign({}, importMap)));
     simplificationMap = output.simplificationMap;
-    console.log(importMap, output.importMap);
     importMap = output.importMap;
 
     //These expressions are either normal expressions, or expressions of the form !key=value.

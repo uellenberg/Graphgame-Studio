@@ -14,7 +14,6 @@ const App = () => {
     const workerRef = useRef<Worker>();
     useEffect(() => {
         workerRef.current = new Worker(new URL("../../lib/compiler/compile-worker", import.meta.url));
-        console.log("created worker")
         workerRef.current.onmessage = msg => {
             if(!msg.data.desmosMessage) return;
 
@@ -38,7 +37,6 @@ const App = () => {
                     setCompileDisabled(true);
                     break;
                 case "fail":
-                    console.log("received fail")
                     //Allow recompiling if compilation failed.
                     setCompileDisabled(false);
                     break;
@@ -61,7 +59,6 @@ const App = () => {
         //If there is no main, then we can just ignore this.
         if(!main) return;
 
-        console.log("sending compile");
         //Send the message to compile.
         workerRef.current?.postMessage({desmosMessage: true, type: "compile", main});
     };
