@@ -29,6 +29,8 @@ export const compile = async (main: string) : Promise<ListState | null> => {
     simplificationMap = output.simplificationMap;
     importMap = output.importMap;
 
+    //TODO: Show errors to user.
+
     //These expressions are either normal expressions, or expressions of the form !key=value.
     //These types of expressions control the state of the normal expression that comes after them (for example, to control the color).
     const expressions = output.output;
@@ -64,7 +66,7 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
         case "color":
             state.colorLatex = value;
             break;
-        case "opacity":
+        case "stroke":
             state.lineOpacity = value;
             break;
         case "thickness":
@@ -80,10 +82,14 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
             };
             break;
         case "label":
+            state.showLabel = true;
             state.label = value;
             break;
         case "drag":
             state.dragMode = <DragMode>value.toUpperCase();
+            break;
+        case "hidden":
+            state.hidden = value === "true";
             break;
     }
 }
