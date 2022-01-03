@@ -25,7 +25,7 @@ import GithubAuth from "./GithubAuth";
 import {GitAuth} from "isomorphic-git";
 import GithubClone from "./GithubClone";
 
-const Files = ({setFile}: {setFile: (file: string) => void}) => {
+const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void, resetFile: (file: string) => Promise<void>, resetAll: () => Promise<void>}) => {
     const [fsData, setFSData] = useState<FileTree | null>(null);
 
     const refresh = () => {
@@ -42,17 +42,17 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
     const fileManagerRef = React.createRef<FileManager>();
 
     const onAddClick = ({itemData, viewArea, fileSystemItem}: {itemData: any, viewArea: any, fileSystemItem: any}) => {
-        createFile(itemData.extension as string, fileSystemItem).then(val => {
-            if(val) {
-                setFSData(fsData);
-                fileManagerRef.current?.instance.refresh();
+        createFile(itemData.extension as string, fileSystemItem).then(file => {
+            if(file) {
+                refresh();
+                resetFile(file);
             }
         });
     };
 
-    const createFile = async (fileExtension: string, directory = fileManagerRef.current?.instance.getCurrentDirectory()) => {
+    const createFile = async (fileExtension: string, directory = fileManagerRef.current?.instance.getCurrentDirectory()) : Promise<string> => {
         if (!directory.isDirectory || !fileExtension) {
-            return false;
+            return "";
         }
 
         const path = "/" + (directory.path || "");
@@ -76,7 +76,7 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
 
         let array: FileTree = null as unknown as FileTree;
         if (!directory.dataItem) {
-            if(!fsData) return false;
+            if(!fsData) return "";
             array = fsData;
         } else {
             array = directory.dataItem.items;
@@ -95,10 +95,12 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
             size: 0,
         };
 
-        await writeFile(Path.join(path, name), "");
+        const file = Path.join(path, name);
+
+        await writeFile(file, "");
         array.push(newItem);
 
-        return true;
+        return file;
     }
 
     const newFileMenuOptions = {
@@ -178,6 +180,7 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
             });
         }, () => {
             refresh();
+            resetAll();
         });
     }
 
@@ -199,13 +202,17 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
         reader.onload = async () => {
             if(reader.result == null) return;
 
+            const file = Path.join(path, e.fileData.name);
+
             if(typeof(reader.result) === "string") {
-                await writeFile(Path.join(path, e.fileData.name), reader.result);
+                await writeFile(file, reader.result);
             } else {
                 const buffer = new Buffer(reader.result);
-                await writeFile(Path.join(path, e.fileData.name), buffer);
+                await writeFile(file, buffer);
             }
 
+            refresh();
+            resetFile(file);
         };
         reader.readAsArrayBuffer(e.fileData)
     };
@@ -214,14 +221,20 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
         // @ts-ignore
         const path = "/" + (e.sourceItem.parentPath || "");
 
+        const oldFile = Path.join(path, e.sourceItem.name);
+        const newFile = Path.join(path, e.itemName);
+
         //We do this to ensure that the directory (and its parents) exists before we move it, as directories aren't created on the filesystem until they are used.
         if(e.sourceItem.isDirectory) {
-            await mkdirRecursive(Path.join(path, e.sourceItem.name));
+            await mkdirRecursive(oldFile);
         } else {
             await mkdirRecursive(path);
         }
 
-        await rename(Path.join(path, e.sourceItem.name), Path.join(path, e.itemName));
+        await rename(oldFile, newFile);
+
+        refresh();
+        resetFile(oldFile);
     };
 
     const onMove = async (e: ItemMovedEvent) => {
@@ -236,6 +249,9 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
         }
 
         await rename(e.sourceItem.path, e.itemPath);
+
+        refresh();
+        resetFile(e.sourceItem.path);
     };
 
     const onDelete = async (e: ItemDeletedEvent) => {
@@ -247,10 +263,16 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
             await mkdirRecursive(e.item.path);
 
             await rmdirRecursive(e.item.path);
+
+            refresh();
+            resetAll();
         } else {
             await mkdirRecursive(path);
 
             await unlink(e.item.path);
+
+            refresh();
+            resetFile(e.item.path);
         }
     };
 
@@ -258,7 +280,7 @@ const Files = ({setFile}: {setFile: (file: string) => void}) => {
         //Only allow opening .lm files.
         if(!["", ".lm", ".txt", ".gitignore"].includes(Path.extname(e.file.name))) return;
 
-        setFile(e.file.path);
+        setFile(Path.resolve(e.file.path));
     };
 
     return (

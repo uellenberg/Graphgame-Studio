@@ -5,19 +5,36 @@ import {DragMode, ExpressionState, ListState, State} from "../desmosState";
 import {readdir, readFile} from "./worker-files";
 
 let simplificationMap: Record<string, string> = {};
+let importMap: Record<string, TemplateModule | string> = {
+    graphgame: <TemplateModule><unknown>graphgame
+};
 
 let oldMain = "";
 
-export const compile = async (path: string, force = false) : Promise<ListState | null> => {
-    //Search for a main file directly under us.
-    const main = await findMain(path);
-    if(!main || (!force && main === oldMain)) return null;
+export const compile = async (main: string) : Promise<ListState | null> => {
+    //Return if we don't have a main, return nothing.
+    if(!main) return null;
+
+    console.log("compiling");
+
+    console.log("import1", importMap);
+
+    //If the main changed, reset our input and simplification maps.
+    if(oldMain !== main) {
+        simplificationMap = {};
+        ResetImports();
+    }
+
+    console.log("import2", importMap)
+
     oldMain = main;
 
     //Compile the main file, supplying graphgame as an import.
     //Simplification map allows us to skip simplification for items that have already been simplified, in order to drastically reduce compile time.
-    const output = <{output: string[], simplificationMap: Record<string, string>}>(await Compile((await readFile(main) as Buffer)?.toString() || "", false, false, Path.resolve(Path.dirname(main)), true, true, true, simplificationMap, {graphgame: <TemplateModule><unknown>graphgame}));
+    const output = <{output: string[], simplificationMap: Record<string, string>, importMap: Record<string, TemplateModule | string>}>(await Compile((await readFile(main) as Buffer)?.toString() || "", false, false, Path.resolve(Path.dirname(main)), true, true, true, Object.assign({}, simplificationMap), Object.assign({}, importMap)));
     simplificationMap = output.simplificationMap;
+    console.log(importMap, output.importMap);
+    importMap = output.importMap;
 
     //These expressions are either normal expressions, or expressions of the form !key=value.
     //These types of expressions control the state of the normal expression that comes after them (for example, to control the color).
@@ -42,25 +59,6 @@ export const compile = async (path: string, force = false) : Promise<ListState |
     }
 
     return expressionsState;
-}
-
-const findMain = async (path: string) : Promise<string | null> => {
-    let folderPath = Path.dirname(path);
-
-    let searchPath = "/";
-
-    //This goes through the directory tree, starting at the lowest directory.
-    //In each directory, we search for a main.lm, and if we find one, we return it.
-    //If we don't, we go up a level. If in the end there is no main, we return null.
-    for (const dir of folderPath.split(/\//g)) {
-        const path = Path.resolve(searchPath, dir);
-
-        if((await readdir(path))?.includes("main.lm")) return Path.join(path, "main.lm");
-
-        searchPath = path;
-    }
-
-    return null;
 }
 
 const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
@@ -95,4 +93,16 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
             state.dragMode = <DragMode>value.toUpperCase();
             break;
     }
+}
+
+export const ResetPath = (path: string) => {
+    //Delete a path from the import map if it has been modified.
+    delete importMap[path];
+}
+
+export const ResetImports = () => {
+    //Delete all imports if a large change has occurred (git clone/pull, etc) or if the main changed.
+    importMap = {
+        graphgame: <TemplateModule><unknown>graphgame
+    };
 }

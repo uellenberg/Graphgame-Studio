@@ -3,7 +3,7 @@ import CodeEditor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import {lstat, readFile, writeFile} from "../../lib/files";
 
-const Editor = ({file}: {file: string}) => {
+const Editor = ({file, resetFile}: {file: string, resetFile: (file: string) => Promise<void>}) => {
     const [code, setCode] = useState("");
 
     //Switch to the new file when it changes.
@@ -38,7 +38,10 @@ const Editor = ({file}: {file: string}) => {
     return (
         <CodeEditor
             value={code}
-            onValueChange={code => setCode(code)}
+            onValueChange={code => {
+                setCode(code);
+                resetFile(file);
+            }}
             highlight={code => file.endsWith(".lm") ? highlight(code, languages.logimat, "logimat") : code}
             padding={10}
             style={{

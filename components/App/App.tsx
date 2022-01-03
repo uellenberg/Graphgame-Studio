@@ -4,6 +4,7 @@ import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
 import Compile from "../Compile/Compile";
+import {FindMain} from "../../lib/mainFile";
 
 declare const BrowserFS: any;
 
@@ -13,31 +14,35 @@ const App = () => {
     const workerRef = useRef<Worker>();
     useEffect(() => {
         workerRef.current = new Worker(new URL("../../lib/compiler/compile-worker", import.meta.url));
+        console.log("created worker")
         workerRef.current.onmessage = msg => {
             if(!msg.data.desmosMessage) return;
 
-            //Allow recompiling if the compile fails.
-            if(msg.data.fail) {
-                setCompileDisabled(false);
-                return;
+            switch(msg.data.type) {
+                case "compiled":
+                    const state = window.Calc.getState();
+                    state.expressions.list = msg.data.data;
+                    state.expressions.ticker = {
+                        handlerLatex: "m_{ain}",
+                        open: true,
+                        playing: true
+                    };
+
+                    window.Calc.setState(state);
+
+                    //Allow recompilation if compilation finished.
+                    setCompileDisabled(false);
+                    break;
+                case "compiling":
+                    //Don't allow recompiling during compilation.
+                    setCompileDisabled(true);
+                    break;
+                case "fail":
+                    console.log("received fail")
+                    //Allow recompiling if compilation failed.
+                    setCompileDisabled(false);
+                    break;
             }
-            if(msg.data.compiling) {
-                setCompileDisabled(true);
-                return;
-            }
-            if(!msg.data.data) return;
-
-            const state = window.Calc.getState();
-            state.expressions.list = msg.data.data;
-            state.expressions.ticker = {
-                handlerLatex: "m_{ain}",
-                open: true,
-                playing: true
-            };
-
-            window.Calc.setState(state);
-
-            setCompileDisabled(false);
         };
         BrowserFS.FileSystem.WorkerFS.attachRemoteListener(workerRef.current);
 
@@ -50,8 +55,25 @@ const App = () => {
 
     const [file, setFile] = useState("");
 
-    const compile = (force: boolean) => {
-        workerRef.current?.postMessage({desmosMessage: true, file, force});
+    const compile = async () => {
+        //First, find the main.
+        const main = await FindMain(file);
+        //If there is no main, then we can just ignore this.
+        if(!main) return;
+
+        console.log("sending compile");
+        //Send the message to compile.
+        workerRef.current?.postMessage({desmosMessage: true, type: "compile", main});
+    };
+
+    const resetFile = async (file: string) => {
+        //Send the message to reset.
+        workerRef.current?.postMessage({desmosMessage: true, type: "reset", path: file});
+    };
+
+    const resetAll = () => {
+        //Send the message to reset.
+        workerRef.current?.postMessage({desmosMessage: true, type: "resetAll"});
     };
 
     return (
@@ -66,12 +88,12 @@ const App = () => {
                             <Display/>
                         </Box>
                         <Box height="40%">
-                            <Files setFile={setFile}/>
+                            <Files setFile={setFile} resetFile={resetFile} resetAll={resetAll}/>
                         </Box>
                     </Grid>
                     <Grid item md={4} height="100%">
                         <Box height="90%" style={{overflowY: "scroll"}}>
-                            <Editor file={file}/>
+                            <Editor file={file} resetFile={resetFile}/>
                         </Box>
                         <Box height="10%" display="flex">
                             <Compile disabled={compileDisabled} compile={compile}/>
