@@ -3265,6 +3265,15 @@ logimat@^1.0.18:
     ohm-js "^15.5.0"
     yargs "^17.1.1"
 
+logimat@^1.0.19:
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.19.tgz#0020e5729a0014d1c8ca7ac45524c5f323edeee4"
+  integrity sha512-fDNrSVNvIfV7+yJmTNST5H5SOVrAyXp7URIf6Q0pn8L9m0Npuy33xpCk1Bsgg4SubYABIlAMEYlUFDJckYZy6w==
+  dependencies:
+    mathjs "^9.4.4"
+    ohm-js "^15.5.0"
+    yargs "^17.1.1"
+
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
