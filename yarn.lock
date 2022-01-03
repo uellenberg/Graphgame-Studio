@@ -2619,12 +2619,12 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
-graphgame@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.3.tgz#d6cc00a587d4ca45d36b188f65d9a6b91de6404b"
-  integrity sha512-rrG0CwxlbwA47P/tKUAMywQy0whfivWgMb7hSKsMgs95+45denCe3JRIG84RrnCamJV36027LAGUv/FHNIpZxg==
+graphgame@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.4.tgz#697e0f274647f67bbcac58895dfd2006e4dac49d"
+  integrity sha512-9uBTTWMFNXZumupCVL+gEozPuCyatccNTXEQXEnmgCwhuMzRNRE4WewN2MVwQ3ufqg9yeu8teqH4kxs7ZhkxsA==
   dependencies:
-    logimat "^1.0.16"
+    logimat "^1.0.18"
 
 has-bigints@^1.0.1:
   version "1.0.1"
@@ -3256,19 +3256,10 @@ lodash@^4.17.14, lodash@^4.17.20:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-logimat@^1.0.16:
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.16.tgz#ce12a8d35ef04394e766006fad2a2525de94989e"
-  integrity sha512-ls2aOQztLm3utsIDP9mfM5WhWg3UMHFVFp2JI2oxpuOGyMayUAf3Kixz5ljpA8leLOnrpqCloUZTDazGwEClow==
-  dependencies:
-    mathjs "^9.4.4"
-    ohm-js "^15.5.0"
-    yargs "^17.1.1"
-
-logimat@^1.0.17:
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.17.tgz#2decb9023b0f1e4012a274de32c25de7595fa9ba"
-  integrity sha512-pmS4EmjxfitySCYbszTCEfMgQGGj7EHCfwSrNEVg2Q86AvF8Z95U3PkxZGehQhMlpjhnTEk+hl5FdAq2b7z1Bg==
+logimat@^1.0.18:
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.18.tgz#b551cfd7510b98d24aa7c0669568a135c5f610b7"
+  integrity sha512-dg6OmFVmYrS+aw2ePMDrBoqyj1ID0OV1MmkZK9MlXZqlKpGzeYD3Wex1Pm2rs7XUmgeJT4vcYHDMxgyRlKDbLQ==
   dependencies:
     mathjs "^9.4.4"
     ohm-js "^15.5.0"
