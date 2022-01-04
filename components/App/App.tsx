@@ -5,11 +5,13 @@ import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
 import Compile from "../Compile/Compile";
 import {FindMain} from "../../lib/mainFile";
+import Export from "../Export/Export";
 
 declare const BrowserFS: any;
 
 const App = () => {
     const [compileDisabled, setCompileDisabled] = useState(false);
+    const [exportDisabled, setExportDisabled] = useState(true);
 
     const workerRef = useRef<Worker>();
     useEffect(() => {
@@ -31,6 +33,9 @@ const App = () => {
 
                     //Allow recompilation if compilation finished.
                     setCompileDisabled(false);
+
+                    //Allow exporting after a compile.
+                    setExportDisabled(false);
                     break;
                 case "compiling":
                     //Don't allow recompiling during compilation.
@@ -94,6 +99,7 @@ const App = () => {
                         </Box>
                         <Box height="10%" display="flex">
                             <Compile disabled={compileDisabled} compile={compile}/>
+                            <Export disabled={exportDisabled}/>
                         </Box>
                     </Grid>
                 </Grid>
