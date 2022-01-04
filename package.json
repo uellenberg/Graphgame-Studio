@@ -2,9 +2,9 @@
   "name": "graphgame-studio",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && next export",
-    "start": "next start"
+    "dev": "npx next dev",
+    "build": "npx next build && npx next export -o dist/ && npx touch dist/.nojekyll && echo graphgame.js.org > dist/CNAME",
+    "start": "npx next start"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
