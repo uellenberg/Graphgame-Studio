@@ -1,13 +1,6 @@
 import React, {useEffect} from "react";
 import {Calculator, Desmos} from "../../lib/desmos";
 
-declare global {
-    interface Window {
-        Calc: Calculator;
-        Desmos: Desmos;
-    }
-}
-
 /*
 The main display component. Handles displaying a Desmos window.
  */
