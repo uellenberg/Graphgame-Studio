@@ -27,7 +27,7 @@ import GithubClone from "./GithubClone";
 import GithubCommit from "./GithubCommit";
 import GithubDetails from "./GithubDetails";
 
-const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void, resetFile: (file: string) => Promise<void>, resetAll: () => Promise<void>}) => {
+const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void, resetFile: (file: string) => void, resetAll: () => void}) => {
     const [fsData, setFSData] = useState<FileTree | null>(null);
 
     const refresh = () => {

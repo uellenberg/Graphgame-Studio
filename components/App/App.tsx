@@ -63,7 +63,7 @@ const App = () => {
         workerRef.current?.postMessage({desmosMessage: true, type: "compile", main});
     };
 
-    const resetFile = async (file: string) => {
+    const resetFile = (file: string) => {
         //Send the message to reset.
         workerRef.current?.postMessage({desmosMessage: true, type: "reset", path: file});
     };

@@ -3,7 +3,7 @@ import CodeEditor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import {lstat, readFile, writeFile} from "../../lib/files";
 
-const Editor = ({file, resetFile}: {file: string, resetFile: (file: string) => Promise<void>}) => {
+const Editor = ({file, resetFile}: {file: string, resetFile: (file: string) => void}) => {
     const [code, setCode] = useState("");
 
     //Switch to the new file when it changes.
