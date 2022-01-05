@@ -6,6 +6,7 @@ import Files from "../Files/Files";
 import Compile from "../Compile/Compile";
 import {FindMain} from "../../lib/mainFile";
 import Export from "../Export/Export";
+import {OnFSReady} from "../../lib/files";
 
 declare const BrowserFS: any;
 
@@ -78,9 +79,26 @@ const App = () => {
         workerRef.current?.postMessage({desmosMessage: true, type: "resetAll"});
     };
 
+    //Don't render the app if FS isn't ready.
+    const [shouldRender, setShouldRender] = useState(false);
+    //Only run if we're in the browser and if it isn't already true.
+    if(typeof window !== "undefined" && !shouldRender) {
+        OnFSReady(() => {
+            setShouldRender(true);
+        });
+    }
+
+    if(!shouldRender) {
+        return (
+            <Box height="100%" color="white">
+                Initializing filesystem...
+            </Box>
+        );
+    }
+
     return (
         <>
-            <Box display={{base: "inherit", md: "none"}} height="100%">
+            <Box display={{base: "inherit", md: "none"}} height="100%" color="white">
                 Graphgame Studio requires a larger display to function.
             </Box>
             <Box display={{base: "none", md: "inherit"}} height="100%">

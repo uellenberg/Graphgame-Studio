@@ -4,15 +4,24 @@ import * as util from "util";
 
 declare const BrowserFS: any;
 
-if (typeof window !== "undefined") {
+let FSReady = false;
+export const OnFSReady = (func: () => void) : void => {
+    if(FSReady) {
+        func();
+        return;
+    }
+
     //@ts-ignore
     BrowserFS.install(window);
     //@ts-ignore
     BrowserFS.configure({
         fs: "IndexedDB",
         options: {}
-    }, () => {});
-}
+    }, () => {
+        FSReady = true;
+        func();
+    });
+};
 
 export const fs: FSModule = typeof window !== "undefined" ? BrowserFS.BFSRequire("fs") : <FSModule>{};
 
