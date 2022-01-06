@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Box, Grid} from "@mui/material";
+import {Alert, Box, Grid, Snackbar} from "@mui/material";
 import Display from "../Display/Display";
 import Editor from "../Editor/Editor";
 import Files from "../Files/Files";
@@ -7,6 +7,7 @@ import Compile from "../Compile/Compile";
 import {FindMain} from "../../lib/mainFile";
 import Export from "../Export/Export";
 import {OnFSReady} from "../../lib/files";
+import {toast, ToastContainer} from "react-toastify";
 
 declare const BrowserFS: any;
 
@@ -45,6 +46,10 @@ const App = () => {
                 case "fail":
                     //Allow recompiling if compilation failed.
                     setCompileDisabled(false);
+                    break;
+                case "error":
+                    //Show the error message alert.
+                    toast.error(msg.data.message);
                     break;
             }
         };
@@ -122,6 +127,13 @@ const App = () => {
                     </Grid>
                 </Grid>
             </Box>
+            <ToastContainer
+                bodyClassName="toast-body"
+                position="bottom-left"
+                theme="colored"
+                closeOnClick={false}
+                draggable={false}
+            />
         </>
     );
 }

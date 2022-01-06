@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import "../styles/index.scss";
 import "prismjs/themes/prism-dark.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 import "../lib/grammar";
 import "../lib/files";
