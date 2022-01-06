@@ -26,6 +26,7 @@ import {GitAuth} from "isomorphic-git";
 import GithubClone from "./GithubClone";
 import GithubCommit from "./GithubCommit";
 import GithubDetails from "./GithubDetails";
+import {toast} from "react-toastify";
 
 const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void, resetFile: (file: string) => void, resetAll: () => void}) => {
     const [fsData, setFSData] = useState<FileTree | null>(null);
@@ -161,8 +162,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                     if(!val) return;
 
                     //Clone the specified repository.
-                    await clone(val[0], path, val[1]);
-                    //TODO: Use clone to send message to user.
+                    const result = await clone(val[0], path, val[1]);
                 };
 
                 //Finally, open the dialog.
@@ -188,8 +188,14 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                     if(!val) return;
 
                     //Clone the specified repository.
-                    await Commit(gitDir, val, auth);
-                    //TODO: Use commit output to send message to user.
+                    const result = await Commit(gitDir, val, auth);
+
+                    //Display a message.
+                    if(result instanceof Error) {
+                        toast.error(result.name + ": " + result.message);
+                    } else {
+                        toast.success("Successfully created commit!");
+                    }
                 };
 
                 //Finally, open the dialog.
@@ -205,8 +211,15 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                 //If entering them fails, we can return.
                 if(!(await ensureAccountDetails(gitDir1))) return;
 
-                await Pull(gitDir1, auth);
-                //TODO: Use pull to send message to user.
+                //Pull
+                const result = await Pull(gitDir1, auth);
+
+                //Display a message.
+                if(result instanceof Error) {
+                    toast.error(result.name + ": " + result.message);
+                } else {
+                    toast.success("Successfully pulled!");
+                }
 
                 //Reset the file to avoid overrides.
                 setFile("");
@@ -243,7 +256,15 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
         const path = Path.join("/" + curDir, folder);
         await mkdirRecursive(path);
 
-        await Clone(url, path, auth);
+        //Clone the repository.
+        const result = await Clone(url, path, auth);
+
+        //Display a message.
+        if(result instanceof Error) {
+            toast.error(result.name + ": " + result.message);
+        } else {
+            toast.success("Successfully cloned repository!");
+        }
 
         refresh();
         resetAll();

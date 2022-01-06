@@ -3,23 +3,27 @@ import {fs, readdir} from "./files";
 import http from "isomorphic-git/http/web";
 import Path from "path";
 
-export const Clone = async (repo: string, folder: string, auth: () => Promise<GitAuth>) : Promise<void> => {
-    await git.clone({
-        fs,
-        http,
-        dir: folder,
-        corsProxy: "https://cors.isomorphic-git.org",
-        url: repo,
-        onAuth: url => {
-            //Check if we have the key stored.
-            const key = localStorage.getItem("gh-token");
-            if(key) return {username: key, password: "x-oauth-basic"};
+export const Clone = async (repo: string, folder: string, auth: () => Promise<GitAuth>) : Promise<Error | undefined> => {
+    try {
+        await git.clone({
+            fs,
+            http,
+            dir: folder,
+            corsProxy: "https://cors.isomorphic-git.org",
+            url: repo,
+            onAuth: url => {
+                //Check if we have the key stored.
+                const key = localStorage.getItem("gh-token");
+                if(key) return {username: key, password: "x-oauth-basic"};
 
-            //If we don't, send them to GitHub oauth.
-            return auth();
-        },
-        onAuthFailure: () => auth()
-    });
+                //If we don't, send them to GitHub oauth.
+                return auth();
+            },
+            onAuthFailure: () => auth()
+        });
+    } catch(e) {
+        return <Error>e;
+    }
 };
 
 export const GetGitDir = async (folder: string) : Promise<string | null> => {
@@ -78,34 +82,34 @@ export const SetupUser = async (folder: string, name: string, email: string) : P
 };
 
 export const Commit = async (folder: string, message: string, auth: () => Promise<GitAuth>) : Promise<PushResult | Error> => {
-    //First, we need to add every file.
-    //We'll use statusMatrix to find all the files that have changed.
-    const status = await git.statusMatrix({ fs, dir: folder });
+    try {
+        //First, we need to add every file.
+        //We'll use statusMatrix to find all the files that have changed.
+        const status = await git.statusMatrix({ fs, dir: folder });
 
-    for(const file of status) {
-        //Make sure that the status of the file (2) is different than the staged file (3).
-        if(file[2] === file[3]) continue;
+        for(const file of status) {
+            //Make sure that the status of the file (2) is different than the staged file (3).
+            if(file[2] === file[3]) continue;
 
-        //Get the file name (0).
-        const name = file[0];
+            //Get the file name (0).
+            const name = file[0];
 
-        //Add the file.
-        await git.add({
+            //Add the file.
+            await git.add({
+                fs,
+                dir: folder,
+                filepath: name
+            });
+        }
+
+        //Make a commit with the specified message.
+        await git.commit({
             fs,
             dir: folder,
-            filepath: name
+            message
         });
-    }
 
-    //Make a commit with the specified message.
-    await git.commit({
-        fs,
-        dir: folder,
-        message
-    });
-
-    //Push the new commit and return the result.
-    try {
+        //Push the new commit and return the result.
         return await git.push({
             fs,
             http,
@@ -122,37 +126,17 @@ export const Commit = async (folder: string, message: string, auth: () => Promis
             onAuthFailure: () => auth()
         });
     } catch(e) {
-        return e;
+        return <Error>e;
     }
 };
 
-export const Pull = async (folder: string, auth: () => Promise<GitAuth>) : Promise<void> => {
-    //First, get the status to see if the pull creates a merge commit.
-    const last_commit = (await git.log({fs, dir: folder}))[0].oid;
+export const Pull = async (folder: string, auth: () => Promise<GitAuth>) : Promise<Error | undefined> => {
+    try {
+        //First, get the status to see if the pull creates a merge commit.
+        const last_commit = (await git.log({fs, dir: folder}))[0].oid;
 
-    //Next, pull.
-    await git.pull({
-        fs,
-        http,
-        dir: folder,
-        corsProxy: "https://cors.isomorphic-git.org",
-        onAuth: url => {
-            //Check if we have the key stored.
-            const key = localStorage.getItem("gh-token");
-            if(key) return {username: key, password: "x-oauth-basic"};
-
-            //If we don't, send them to GitHub oauth.
-            return auth();
-        },
-        onAuthFailure: () => auth()
-    });
-
-    //See if the new last commit is different.
-    const new_last_commit = (await git.log({fs, dir: folder}))[0].oid;
-
-    if(last_commit !== new_last_commit) {
-        //In case the pull created a merge commit, push as well.
-        await git.push({
+        //Next, pull.
+        await git.pull({
             fs,
             http,
             dir: folder,
@@ -160,12 +144,36 @@ export const Pull = async (folder: string, auth: () => Promise<GitAuth>) : Promi
             onAuth: url => {
                 //Check if we have the key stored.
                 const key = localStorage.getItem("gh-token");
-                if (key) return {username: key, password: "x-oauth-basic"};
+                if(key) return {username: key, password: "x-oauth-basic"};
 
                 //If we don't, send them to GitHub oauth.
                 return auth();
             },
             onAuthFailure: () => auth()
         });
+
+        //See if the new last commit is different.
+        const new_last_commit = (await git.log({fs, dir: folder}))[0].oid;
+
+        if(last_commit !== new_last_commit) {
+            //In case the pull created a merge commit, push as well.
+            await git.push({
+                fs,
+                http,
+                dir: folder,
+                corsProxy: "https://cors.isomorphic-git.org",
+                onAuth: url => {
+                    //Check if we have the key stored.
+                    const key = localStorage.getItem("gh-token");
+                    if (key) return {username: key, password: "x-oauth-basic"};
+
+                    //If we don't, send them to GitHub oauth.
+                    return auth();
+                },
+                onAuthFailure: () => auth()
+            });
+        }
+    } catch(e) {
+        return <Error>e;
     }
 };

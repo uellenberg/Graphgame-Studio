@@ -38,6 +38,9 @@ const App = () => {
 
                     //Allow exporting after a compile.
                     setExportDisabled(false);
+
+                    //Show a message to show that the compile succeeded.
+                    toast.success("Successfully compiled!");
                     break;
                 case "compiling":
                     //Don't allow recompiling during compilation.
