@@ -68,9 +68,11 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
             break;
         case "stroke":
             state.lineOpacity = value;
+            state.pointOpacity = value;
             break;
         case "thickness":
             state.lineWidth = value;
+            state.pointSize = value;
             break;
         case "fill":
             state.fillOpacity = value;
@@ -90,6 +92,15 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
             break;
         case "hidden":
             state.hidden = value === "true";
+            break;
+        case "outline":
+            state.suppressTextOutline = value === "false";
+            break;
+        case "angle":
+            state.labelAngle = value;
+            break;
+        case "size":
+            state.labelSize = value;
             break;
     }
 }
