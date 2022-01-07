@@ -2619,10 +2619,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
-graphgame@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.4.tgz#697e0f274647f67bbcac58895dfd2006e4dac49d"
-  integrity sha512-9uBTTWMFNXZumupCVL+gEozPuCyatccNTXEQXEnmgCwhuMzRNRE4WewN2MVwQ3ufqg9yeu8teqH4kxs7ZhkxsA==
+graphgame@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.5.tgz#63461344d94c1c29d91bcb59b996c5bce63dd292"
+  integrity sha512-g++D4Alkjn9oE4/5FK6fDrHIP1nP+RHCl14zoYFcYyQPl1VS0IkyAZ5llZsCK+c3th11caf8GJXcKgniaSrKlw==
   dependencies:
     logimat "^1.0.18"
 
@@ -3265,10 +3265,10 @@ logimat@^1.0.18:
     ohm-js "^15.5.0"
     yargs "^17.1.1"
 
-logimat@^1.0.21:
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.21.tgz#7a8599553621dfe3c1177b0b51778700910ba26b"
-  integrity sha512-ghWlmDVYnsvDTZGohtKSSv8nCUQ57mztGB2SMS+DsiiNPsLpMlO0ziC8gxsSPJj3rUEpAxV0dNmH4fvrwV6/pg==
+logimat@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.22.tgz#a2f75ce10a4ef730dd7b9c7c1dd4322a400314f5"
+  integrity sha512-qSWkA9Ss2HJjzNwLTOzn/RKdxsHRGXAlYxOicq/rQTDSzy2wMGYRg20Dtp+Cgyr3GujsEHkPDmTpGEo8IPnPlA==
   dependencies:
     mathjs "^9.4.4"
     ohm-js "^15.5.0"
