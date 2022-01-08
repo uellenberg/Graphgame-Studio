@@ -17,7 +17,9 @@ export const OnFSReady = (func: () => void) : void => {
     BrowserFS.configure({
         fs: "IndexedDB",
         options: {}
-    }, () => {
+    }, (e: Error | null) => {
+        if(e) throw e;
+
         FSReady = true;
         func();
     });
