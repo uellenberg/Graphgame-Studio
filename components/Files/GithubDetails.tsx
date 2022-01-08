@@ -7,7 +7,7 @@ const GithubDetails = ({open, submit}: {open: boolean, submit: (data: [string, s
 
     return (
         <Dialog open={open} onClose={() => submit(null)}>
-            <DialogTitle>Authenticate</DialogTitle>
+            <DialogTitle>Details</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Please enter the name and email that you would like to be used in the commit messages.
