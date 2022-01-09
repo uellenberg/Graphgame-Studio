@@ -6,7 +6,7 @@ const GithubCommit = ({open, submit}: {open: boolean, submit: (message: string |
 
     return (
         <Dialog open={open} onClose={() => submit(null)}>
-            <DialogTitle>Authenticate</DialogTitle>
+            <DialogTitle>Commit</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Please enter the commit message.

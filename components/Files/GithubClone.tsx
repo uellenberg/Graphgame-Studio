@@ -7,7 +7,7 @@ const GithubClone = ({open, submit}: {open: boolean, submit: (data: [string, str
 
     return (
         <Dialog open={open} onClose={() => submit(null)}>
-            <DialogTitle>Authenticate</DialogTitle>
+            <DialogTitle>Clone</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Please enter the URL of the repository, and an optional folder for it to be cloned into. If no folder is specified, it will be cloned in to the current working directory.
