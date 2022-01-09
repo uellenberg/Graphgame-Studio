@@ -162,7 +162,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                     if(!val) return;
 
                     //Clone the specified repository.
-                    const result = await clone(val[0], path, val[1]);
+                    await clone(val[0], path, val[1]);
                 };
 
                 //Finally, open the dialog.
