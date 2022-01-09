@@ -94,12 +94,22 @@ export const Commit = async (folder: string, message: string, auth: () => Promis
             //Get the file name (0).
             const name = file[0];
 
-            //Add the file.
-            await git.add({
-                fs,
-                dir: folder,
-                filepath: name
-            });
+            //If it's 0, then the file is deleted, so we should remove it instead of adding it. Otherwise, we can add it, as it's been changed.
+            if(file[2] === 0) {
+                //Remove the file.
+                await git.remove({
+                    fs,
+                    dir: folder,
+                    filepath: name
+                });
+            } else {
+                //Add the file.
+                await git.add({
+                    fs,
+                    dir: folder,
+                    filepath: name
+                });
+            }
         }
 
         //Make a commit with the specified message.
