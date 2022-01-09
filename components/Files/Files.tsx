@@ -405,8 +405,8 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
     };
 
     const onOpen = (e: SelectedFileOpenedEvent) => {
-        //Only allow opening .lm files.
-        if(!["", ".lm", ".txt", ".gitignore"].includes(Path.extname(e.file.name))) return;
+        //Only allow opening certain file types.
+        if(!["", ".lm", ".txt", ".gitignore", ".md"].includes(Path.extname(e.file.name))) return;
 
         setFile(Path.resolve(e.file.path));
     };
