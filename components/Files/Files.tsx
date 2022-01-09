@@ -15,6 +15,7 @@ import {
 import {FileSelectionItem, Item, ItemView, Toolbar} from "devextreme-react/file-manager";
 import * as Path from "path";
 import {
+    DirectoryCreatedEvent,
     FileUploadedEvent, ItemDeletedEvent,
     ItemDownloadingEvent, ItemMovedEvent,
     ItemRenamedEvent, SelectedFileOpenedEvent,
@@ -392,6 +393,16 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
         resetFile(e.sourceItem.path);
     };
 
+    const onMkdir = async (e: DirectoryCreatedEvent) => {
+        // @ts-ignore
+        const path = "/" + (e.parentDirectory.path || "") + "/" + e.name;
+
+        //Create the directory.
+        await mkdirRecursive(path);
+
+        refresh();
+    };
+
     const onDelete = async (e: ItemDeletedEvent) => {
         // @ts-ignore
         const path = "/" + (e.item.parentPath || "");
@@ -433,7 +444,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                 rename: true,
                 upload: true,
                 delete: true
-            }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen}>
+            }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen} onDirectoryCreated={onMkdir}>
                 <Toolbar>
                     <Item name="showNavPane" visible="true" />
                     <Item name="separator" />
