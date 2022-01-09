@@ -195,6 +195,12 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                         toast.error(result.name + ": " + result.message);
                     } else {
                         toast.success("Successfully created commit!");
+
+                        //Reset the file to avoid overrides.
+                        setFile("");
+
+                        refresh();
+                        resetAll();
                     }
                 };
 
@@ -219,10 +225,14 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                     toast.error(result.name + ": " + result.message);
                 } else {
                     toast.success("Successfully pulled!");
+
+                    //Reset the file to avoid overrides.
+                    setFile("");
+
+                    refresh();
+                    resetAll();
                 }
 
-                //Reset the file to avoid overrides.
-                setFile("");
                 break;
         }
     };
