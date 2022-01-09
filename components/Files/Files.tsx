@@ -194,6 +194,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                     //Display a message.
                     if(result instanceof Error) {
                         toast.error(result.name + ": " + result.message);
+                        console.error(result);
                     } else {
                         toast.success("Successfully created commit!");
 
@@ -224,6 +225,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                 //Display a message.
                 if(result instanceof Error) {
                     toast.error(result.name + ": " + result.message);
+                    console.error(result);
                 } else {
                     toast.success("Successfully pulled!");
 
@@ -273,6 +275,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
         //Display a message.
         if(result instanceof Error) {
             toast.error(result.name + ": " + result.message);
+            console.error(result);
         } else {
             toast.success("Successfully cloned repository!");
         }
