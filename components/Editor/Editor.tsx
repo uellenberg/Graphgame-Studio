@@ -54,6 +54,7 @@ const Editor = ({file, resetFile}: {file: string, resetFile: (file: string) => v
                 minHeight: "100%"
             }}
             readOnly={!file}
+            tabSize={4}
         />
     );
 };
