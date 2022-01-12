@@ -2619,12 +2619,12 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
-graphgame@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.7.tgz#e752c0b1b527b51f682480dcd662a796458a78e7"
-  integrity sha512-uouKIXvDXDKjX0RKzuU0IePWjvptGWVj+hXDsZq4Dv5Rz66hafgV1x+sD0NeLWFj7BqpWTjF3TPKl5frrC2phg==
+graphgame@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.8.tgz#4078b086f2ad36429941476b4f6b21c074f1db53"
+  integrity sha512-zBwXbVmUDPXLAPoO+iwPDf6Z3ZNvZ2eP/PfrrBiOpBRL0UAFXIbICQx/hzxgYgNiqjfK1+pkBSkc26Kc4u1k5g==
   dependencies:
-    logimat "^1.0.23"
+    logimat "^1.0.24"
 
 has-bigints@^1.0.1:
   version "1.0.1"
@@ -3255,15 +3255,6 @@ lodash@^4.17.14, lodash@^4.17.20:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
-logimat@^1.0.23:
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.23.tgz#b71644979b0b8d20e09b3785fbf0b7162fdda618"
-  integrity sha512-JW8qD7i39EncPlI7OraNAiS+6wghHbSzSlHqA9xIPzMgfLZBvlXHAljjsz1vx0PeSNZkGGeXiHhXvViJLSXKqg==
-  dependencies:
-    mathjs "^9.4.4"
-    ohm-js "^15.5.0"
-    yargs "^17.1.1"
 
 logimat@^1.0.24:
   version "1.0.24"
