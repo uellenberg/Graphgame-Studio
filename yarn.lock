@@ -2619,10 +2619,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
-graphgame@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.9.tgz#656d43345bc0877a88f33418d8e78a6dae081dfc"
-  integrity sha512-Ow07CenEnjbj42uwTQFS6icU6ZoBsyIovfeIOrfL3seUGX7JdGVfwg9MGp6ZJgiAg35xBGN9TDR3LUDsNyCQMg==
+graphgame@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.10.tgz#8a03365ed476aa6a6b6b3f0bb8ff3093eff7b41e"
+  integrity sha512-QQaUzWhxI3Z54y9sewbtPV6vxxQDhffamILed6d0hJFF46L9B9J2KHuob8/8FxWFYpnahfVWy2ao/rsMRmLOug==
   dependencies:
     logimat "^1.0.24"
 
