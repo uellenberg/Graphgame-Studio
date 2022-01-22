@@ -69,13 +69,19 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
         case "stroke":
             state.lineOpacity = value;
             state.pointOpacity = value;
+
+            if(value === "0") state.lines = false;
             break;
         case "thickness":
             state.lineWidth = value;
             state.pointSize = value;
+
+            if(value === "0") state.lines = false;
             break;
         case "fill":
             state.fillOpacity = value;
+
+            if(value === "0") state.fill = false;
             break;
         case "click":
             state.clickableInfo = {
