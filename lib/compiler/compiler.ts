@@ -108,6 +108,20 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
         case "size":
             state.labelSize = value;
             break;
+        case "min":
+            if(!state.slider) state.slider = {};
+            state.slider.min = value;
+            state.slider.hardMin = true;
+            break;
+        case "max":
+            if(!state.slider) state.slider = {};
+            state.slider.max = value;
+            state.slider.hardMax = true;
+            break;
+        case "step":
+            if(!state.slider) state.slider = {};
+            state.slider.step = value;
+            break;
     }
 }
 

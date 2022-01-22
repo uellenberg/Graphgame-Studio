@@ -21,7 +21,7 @@
     "devextreme-react": "^21.2.4",
     "graphgame": "^1.0.10",
     "isomorphic-git": "^1.10.3",
-    "logimat": "^1.0.24",
+    "logimat": "^1.0.26",
     "next": "^12.0.7",
     "next-pwa": "^5.4.4",
     "node-polyfill-webpack-plugin": "^1.1.4",
