@@ -3265,13 +3265,13 @@ logimat@^1.0.24:
     ohm-js "^15.5.0"
     yargs "^17.1.1"
 
-logimat@^1.0.29:
-  version "1.0.29"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.29.tgz#ef20a34813df09c99f9b83b1518def1c7bba2203"
-  integrity sha512-/hUSd83XTSX1gIBcsVbn5ghB6JD/WrQQmgH0UoRTxBSXqP1D6XVmHP3JuPKkj+NhNkgiZt6rkeaOl7vl3KhBOg==
+logimat@^1.0.30:
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.30.tgz#ba9f0fed318fb05f0ec758769b74a564910eb381"
+  integrity sha512-lQ+7cgZHfP7R5+AHFvX7aNRqsUgRNVbyNT96xxo13W3VdnDYam/mT63RmMT/oJTUNRdnUCozsMRsh5apyAulsg==
   dependencies:
     mathjs "^9.4.4"
-    ohm-js "^15.5.0"
+    ohm-js "^16.2.0"
     yargs "^17.1.1"
 
 loose-envify@^1.1.0, loose-envify@^1.4.0:
@@ -3575,6 +3575,11 @@ ohm-js@^15.5.0:
   dependencies:
     is-buffer "^2.0.4"
     util-extend "^1.0.3"
+
+ohm-js@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/ohm-js/-/ohm-js-16.2.0.tgz#4ce8dacc75d61f7d06777a7694a5a21543dec806"
+  integrity sha512-vUZv4Jwf9+aQQ4t23L/bJLJA/T+A96GWk3LmlxAqViyyzQl7G+FECZASsNBYR/6TQPqx9zEQLBJDPV1N6lTJnQ==
 
 once@^1.3.0, once@^1.3.1:
   version "1.4.0"
