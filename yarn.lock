@@ -3265,10 +3265,10 @@ logimat@^1.0.24:
     ohm-js "^15.5.0"
     yargs "^17.1.1"
 
-logimat@^1.0.30:
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.30.tgz#ba9f0fed318fb05f0ec758769b74a564910eb381"
-  integrity sha512-lQ+7cgZHfP7R5+AHFvX7aNRqsUgRNVbyNT96xxo13W3VdnDYam/mT63RmMT/oJTUNRdnUCozsMRsh5apyAulsg==
+logimat@^1.0.31:
+  version "1.0.31"
+  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.31.tgz#3541d8ded2ed97a388b0d4abe2f78f92b41af416"
+  integrity sha512-9IPOjHLEc1CXkgdWv5jNciL+D5xcBDJu7bSn0Qi2sR4pNGNPwSbVI/EueuBB0wMzKYWtlOTluzK+FcM5qXs9Jw==
   dependencies:
     mathjs "^9.4.4"
     ohm-js "^16.2.0"
