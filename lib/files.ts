@@ -83,6 +83,23 @@ export const rmdirRecursive = async (path: string) : Promise<void> => {
     await rmdir(path);
 }
 
+export const copyDir = async (src: string, dest: string) : Promise<void> => {
+    if(!(await exists(src))) return;
+
+    if ((await lstat(src))?.isDirectory()) {
+        await mkdirRecursive(dest);
+
+        for(const child of await readdir(src) || []) {
+            await copyDir(Path.join(src, child), Path.join(dest, child));
+        }
+    } else {
+        const contents = await readFile(src) as Buffer;
+        if(contents == null) return;
+
+        await writeFile(dest, contents);
+    }
+};
+
 export const GetTree = async () : Promise<FileTree> => {
     if (typeof window === "undefined") {
         return [];

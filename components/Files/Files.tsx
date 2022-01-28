@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {FileManager} from "devextreme-react";
 import {
+    copyDir,
     exists,
     FileTree,
     GetTree,
@@ -28,6 +29,8 @@ import GithubClone from "./GithubClone";
 import GithubCommit from "./GithubCommit";
 import GithubDetails from "./GithubDetails";
 import {toast} from "react-toastify";
+import DevExpress from "devextreme";
+import ItemCopyingEvent = DevExpress.ui.dxFileManager.ItemCopyingEvent;
 
 const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void, resetFile: (file: string) => void, resetAll: () => void}) => {
     const [fsData, setFSData] = useState<FileTree | null>(null);
@@ -396,6 +399,12 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
         resetFile(e.sourceItem.path);
     };
 
+    const onCopy = async (e: ItemCopyingEvent) => {
+        await copyDir(e.item.path, Path.join(e.destinationDirectory.path, Path.basename(e.item.path)));
+
+        refresh();
+    };
+
     const onMkdir = async (e: DirectoryCreatedEvent) => {
         // @ts-ignore
         const path = "/" + (e.parentDirectory.path || "") + "/" + e.name;
@@ -438,8 +447,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
     return (
         <>
             <FileManager fileSystemProvider={fsData || []} height="100%" permissions={{
-                //TODO: Fix copy
-                copy: false,
+                copy: true,
                 create: true,
                 //TODO: Fix downloads
                 download: false,
@@ -447,7 +455,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
                 rename: true,
                 upload: true,
                 delete: true
-            }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen} onDirectoryCreated={onMkdir}>
+            }} ref={fileManagerRef} onFileUploaded={onFileUpload} onItemRenamed={onRename} onItemMoved={onMove} onItemDeleted={onDelete} onSelectedFileOpened={onOpen} onDirectoryCreated={onMkdir} onItemCopying={onCopy}>
                 <Toolbar>
                     <Item name="showNavPane" visible="true" />
                     <Item name="separator" />
