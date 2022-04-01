@@ -19,7 +19,7 @@
     "browserfs": "^1.4.3",
     "devextreme": "^21.2.6",
     "devextreme-react": "^21.2.6",
-    "graphgame": "^1.0.10",
+    "graphgame": "^1.0.11",
     "isomorphic-git": "^1.17.0",
     "logimat": "^1.0.38",
     "next": "^12.1.1",
