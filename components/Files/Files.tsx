@@ -439,7 +439,7 @@ const Files = ({setFile, resetFile, resetAll}: {setFile: (file: string) => void,
 
     const onOpen = (e: SelectedFileOpenedEvent) => {
         //Only allow opening certain file types.
-        if(!["", ".lm", ".txt", ".gitignore", ".md"].includes(Path.extname(e.file.name))) return;
+        if(!["", ".lm", ".txt", ".gitignore", ".md", ".js", ".ts"].includes(Path.extname(e.file.name))) return;
 
         setFile(Path.resolve(e.file.path));
     };
