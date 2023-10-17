@@ -25,7 +25,7 @@ export const compile = async (main: string) : Promise<ListState | null> => {
 
     //Compile the main file, supplying graphgame as an import.
     //Simplification map allows us to skip simplification for items that have already been simplified, in order to drastically reduce compile time.
-    const output = <{output: string[], simplificationMap: Record<string, string>, importMap: Record<string, TemplateModule | string>}>(await Compile((await readFile(main) as Buffer)?.toString() || "", false, false, Path.resolve(main), true, true, true, Object.assign({}, simplificationMap), Object.assign({}, importMap)));
+    const output = <{output: string[], simplificationMap: Record<string, string>, importMap: Record<string, TemplateModule | string>}>(await Compile((await readFile(main) as Buffer)?.toString() || "", false, false, Path.resolve(main), true, true, true, true, Object.assign({}, simplificationMap), Object.assign({}, importMap)));
     simplificationMap = output.simplificationMap;
     importMap = output.importMap;
 
