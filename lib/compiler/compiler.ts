@@ -1,7 +1,7 @@
 import {Compile, TemplateModule} from "logimat";
 import * as Path from "path";
 import * as graphgame from "graphgame";
-import {DragMode, ExpressionState, ListState, State} from "../desmosState";
+import {DragMode, ExpressionState, ItemState, ListState, State} from "../desmosState";
 import {readdir, readFile} from "./worker-files";
 
 let simplificationMap: Record<string, string> = {};
@@ -37,26 +37,59 @@ export const compile = async (main: string) : Promise<ListState | null> => {
 
     let additionalState: Partial<ExpressionState> = {};
 
-    const expressionsState: ListState = [];
+    const expressionsStateByFolder: Record<string, ExpressionState[]> = {};
+    const finalExpressions: ItemState[] = [];
+    const folders: string[] = [];
+
+    let id = 0;
 
     for(const expression of expressions) {
         if(expression.startsWith("!")) {
-            HandleDisplay(expression.substring(1), additionalState);
+            HandleDisplay(expression.substring(1), additionalState, folders);
         } else {
-            //@ts-ignore
-            expressionsState.push({
+            const expressionObj = {
                 type: "expression",
                 latex: expression,
+                id: (id++).toString(),
                 ...additionalState
-            });
+            } as ExpressionState;
+
+            if(expressionObj.folderId) {
+                if(!(expressionObj.folderId in expressionsStateByFolder)) {
+                    expressionsStateByFolder[expressionObj.folderId] = [];
+                }
+
+                expressionsStateByFolder[expressionObj.folderId].push(expressionObj);
+            } else {
+                finalExpressions.push(expressionObj);
+            }
+
             additionalState = {};
         }
     }
 
-    return expressionsState;
+    // Now, we need to build the folders.
+    for(const folderText in expressionsStateByFolder) {
+        const folderID = (id++).toString();
+        finalExpressions.push({
+            type: "folder",
+            id: folderID,
+            title: folderText,
+            collapsed: true,
+        });
+
+        for(const expression of expressionsStateByFolder[folderText]) {
+            finalExpressions.push({
+                ...expression,
+                folderId: folderID,
+            });
+        }
+    }
+
+    return finalExpressions;
 }
 
-const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
+const HandleDisplay = (val: string, state: Partial<ExpressionState>, folders: string[]) : void => {
     //Split by "=" once.
     const index = val.indexOf("=");
     const key = val.slice(0, index);
@@ -121,6 +154,10 @@ const HandleDisplay = (val: string, state: Partial<ExpressionState>) : void => {
         case "step":
             if(!state.slider) state.slider = {};
             state.slider.step = value;
+            break;
+        case "folder":
+            state.folderId = value;
+            if(!folders.includes(value)) folders.push(value);
             break;
     }
 }
