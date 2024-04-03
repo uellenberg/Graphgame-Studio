@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021 Jared Hughes
+Copyright (c) 2024 Jared Hughes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-//Source: https://github.com/DesModder/calc-state-ts/blob/main/state.ts
+//Source: https://github.com/DesModder/DesModder/blob/main/graph-state/state.ts
 
 /**
- * Useful sources:
+ * Reference sources:
  *  - core/types/*
  *  - graphing-calc/models/*
  *  - core/graphing-calc/json/*
  *  - core/graphing-calc/migrations/*
+ *  - main/graph_settings
+ *  - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/desmos/index.d.ts
  */
-export interface State {
+export interface GraphState {
+    // TODO-graph-state: Version 11.
     version: 9;
     randomSeed?: string;
     graph: GrapherState;
     expressions: {
-        list: ListState;
+        list: ItemState[];
         ticker?: Ticker;
     };
 }
@@ -50,12 +53,15 @@ export interface Ticker {
 
 export type ArrowMode = "NONE" | "POSITIVE" | "BOTH";
 
+export type Product = "graphing" | "geometry-calculator" | "graphing-3d";
+
 export interface GrapherState {
+    product?: Product;
     viewport: {
-        xmin: number;
-        ymin: number;
-        xmax: number;
-        ymax: number;
+        xmin?: number;
+        ymin?: number;
+        xmax?: number;
+        ymax?: number;
     };
     // {x,y}AxisMinorSubdivisions appears to be either 5 or 0 (disabled)
     // but Desmos accepts other subdivisions
@@ -80,32 +86,33 @@ export interface GrapherState {
     squareAxes?: boolean;
     restrictGridToFirstQuadrant?: boolean;
     polarMode?: boolean;
+    userLockedViewport?: boolean;
+    threeDMode?: boolean;
 }
 
 type Latex = string;
 type ID = string;
 
-export type ListState = ItemState[];
+export type ItemState = NonFolderState | FolderState;
 
-export type ItemState =
+export type NonFolderState =
     | ExpressionState
     | ImageState
     | TableState
-    | FolderState
     | TextState;
 
-export interface BaseItemModel {
+interface BaseItemState {
     id: ID;
     secret?: boolean;
 }
 
-export interface NonfolderModel extends BaseItemModel {
+interface BaseNonFolderState extends BaseItemState {
     folderId?: ID;
 }
 
 export type LineStyle = "SOLID" | "DASHED" | "DOTTED";
 export type PointStyle = "POINT" | "OPEN" | "CROSS";
-export type DragMode = "NONE" | "X" | "Y" | "XY";
+export type DragMode = "NONE" | "X" | "Y" | "XY" | "AUTO";
 export type LabelSize = "SMALL" | "MEDIUM" | "LARGE" | Latex;
 export type LabelOrientation =
     | "default"
@@ -136,30 +143,21 @@ export interface BaseClickable {
     description?: string;
     latex?: Latex;
 }
-export interface ExpressionState extends NonfolderModel {
+interface ExpressionStateWithoutColumn extends BaseNonFolderState {
     type: "expression";
-    color: string;
-    latex?: Latex;
     showLabel?: boolean;
-    label?: string;
-    hidden?: boolean;
-    points?: boolean;
-    lines?: boolean;
-    lineStyle?: LineStyle;
-    pointStyle?: PointStyle;
     fill?: boolean;
-    dragMode?: DragMode;
+    fillOpacity?: Latex;
+    label?: string;
     labelSize?: LabelSize;
     labelOrientation?: LabelOrientation;
+    labelAngle?: Latex;
     suppressTextOutline?: boolean;
     // interactiveLabel is show-on-hover
     interactiveLabel?: boolean;
     editableLabelMode?: "MATH" | "TEXT";
     residualVariable?: Latex;
-    regressionParameters?: {
-        // key should be Latex, but type aliases are not allowed as keys
-        [key: string]: number;
-    };
+    regressionParameters?: Record<Latex, number>;
     isLogModeRegression?: boolean;
     displayEvaluationAsFraction?: boolean;
     slider?: {
@@ -179,6 +177,10 @@ export interface ExpressionState extends NonfolderModel {
     };
     polarDomain?: Domain;
     parametricDomain?: Domain;
+    parametricDomain3Du?: Domain;
+    parametricDomain3Dv?: Domain;
+    parametricDomain3Dr?: Domain;
+    parametricDomain3Dphi?: Domain;
     // seems like `domain` may be the same as `parametricDomain`
     domain?: Domain;
     cdf?: {
@@ -186,13 +188,6 @@ export interface ExpressionState extends NonfolderModel {
         min?: Latex;
         max?: Latex;
     };
-    colorLatex?: Latex;
-    fillOpacity?: Latex;
-    lineOpacity?: Latex;
-    pointOpacity?: Latex;
-    pointSize?: Latex;
-    lineWidth?: Latex;
-    labelAngle?: Latex;
     vizProps?: {
         // -- Applies to boxplot only:
         // axisOffset=offset and breadth=height (boxplots only)
@@ -214,7 +209,10 @@ export interface ExpressionState extends NonfolderModel {
     clickableInfo?: BaseClickable;
 }
 
-export interface ImageState extends NonfolderModel {
+export type ExpressionState = ExpressionStateWithoutColumn &
+    ColumnExpressionShared;
+
+export interface ImageState extends BaseNonFolderState {
     type: "image";
     image_url: string;
     name?: string;
@@ -232,9 +230,12 @@ export interface ImageState extends NonfolderModel {
     };
 }
 
-export interface TableColumn {
+export type TableColumn = {
     id: ID;
     values: Latex[];
+} & ColumnExpressionShared;
+
+export interface ColumnExpressionShared {
     color: string;
     latex?: Latex;
     hidden?: boolean;
@@ -250,19 +251,19 @@ export interface TableColumn {
     pointOpacity?: Latex;
 }
 
-export interface TableState extends NonfolderModel {
+export interface TableState extends BaseNonFolderState {
     type: "table";
     columns: TableColumn[];
 }
 
-export interface FolderState extends BaseItemModel {
+export interface FolderState extends BaseItemState {
     type: "folder";
     hidden?: boolean;
     collapsed?: boolean;
     title?: string;
 }
 
-export interface TextState extends NonfolderModel {
+export interface TextState extends BaseNonFolderState {
     type: "text";
     text?: string;
 }

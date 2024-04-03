@@ -1,8 +1,8 @@
 import {Compile, TemplateModule} from "logimat";
 import * as Path from "path";
 import * as graphgame from "graphgame";
-import {DragMode, ExpressionState, ItemState, ListState, State} from "../desmosState";
-import {readdir, readFile} from "./worker-files";
+import {DragMode, ExpressionState, ItemState} from "../desmosState";
+import {readFile} from "./worker-files";
 
 let simplificationMap: Record<string, string> = {};
 let importMap: Record<string, TemplateModule | string> = {
@@ -11,7 +11,7 @@ let importMap: Record<string, TemplateModule | string> = {
 
 let oldMain = "";
 
-export const compile = async (main: string) : Promise<ListState | null> => {
+export const compile = async (main: string) : Promise<ItemState[] | null> => {
     //Return if we don't have a main, return nothing.
     if(!main) return null;
 
