@@ -1363,6 +1363,13 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.23.tgz#3b41a6e643589ac6442bdbd7a4a3ded62f33f7da"
   integrity sha512-UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==
 
+"@types/node@^20.12.2":
+  version "20.19.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.19.2.tgz#bdef79b0b5b16caa76ab1f7094183302423b94a1"
+  integrity sha512-9pLGGwdzOUBDYi0GNjM97FIA+f92fqSke6joWeBjWXllfNxZBs7qeMF7tvtOIsbY45xkWkxrdwUfUf3MnQa9gA==
+  dependencies:
+    undici-types "~6.21.0"
+
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
@@ -1757,6 +1764,14 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
+
+calculatoros@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/calculatoros/-/calculatoros-1.0.0.tgz#2719922e4acacd95e5da7d03e0928d81b4048568"
+  integrity sha512-ykXW9w9XNW6vE7PzoM7sYZbHeDyPhneIti8CsMp7w4huCVnBvScNPI9pGjnia5hDroGwr5nyC2KdqXrI19SiJg==
+  dependencies:
+    "@types/node" "^20.12.2"
+    logimat "^1.0.46"
 
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
@@ -2481,12 +2496,12 @@ graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
-graphgame@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.11.tgz#8962d617bf4e3607fdac927987b4ed1685877c95"
-  integrity sha512-tEGjuhkyJzMF270NvsHm/Ajz4wbGIAAuyVxgPjYSfd7CxE4ovOjmCWp7gsPtG8OuqB9jOSpBzbNYNGk4Wgogpg==
+graphgame@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/graphgame/-/graphgame-1.0.12.tgz#b8957f5a371b7710aea681337ce438a975c5454b"
+  integrity sha512-fyJJld8z0CNYzFoZSZ5f/alKfQPb63+YZyTdTUJgfATgRXhZXnc+P9BW8XY3GDJ+184p2Z7qtxSzEg8d16T3WA==
   dependencies:
-    logimat "^1.0.38"
+    logimat "^1.0.46"
 
 has-bigints@^1.0.1:
   version "1.0.1"
@@ -3058,19 +3073,10 @@ lodash@^4.17.14, lodash@^4.17.20:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-logimat@^1.0.38:
-  version "1.0.38"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.38.tgz#f510287c798a9b4b37578c25440ab14d7ae00a4e"
-  integrity sha512-IVvW2RV2A6UinyG/8+GUlDTKseNwvma8/th8ajpHmwCQ00+Z7W9FvMqLwDP5HEN5aRoiI0OoZsAWgXlafMQWmg==
-  dependencies:
-    mathjs "^10.4.1"
-    ohm-js "^16.3.2"
-    yargs "^17.4.0"
-
-logimat@^1.0.45:
-  version "1.0.45"
-  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.45.tgz#595fcc77eafce689128a5939c7b19bd7c405df79"
-  integrity sha512-bdqal9cdsZq8mdzNX2tzVs4DQ2syZwVQWk+qvhThYgBC2uSj9kfKDeISE25KlTE14VM75DX5CdPPapza1Cm/rQ==
+logimat@^1.0.46:
+  version "1.0.46"
+  resolved "https://registry.yarnpkg.com/logimat/-/logimat-1.0.46.tgz#d57e0925a15221e828a6370285909669c17e0086"
+  integrity sha512-xR01iS2AMCsyhKqiJTc9hiCzdyUsta1aBWgKW7F09xVF9cq1RW7KGTPQtZUc1t2g5YbCPgYFzL1Dg+/dZr4Wlw==
   dependencies:
     mathjs "^10.4.1"
     ohm-js "^16.3.2"
@@ -4226,6 +4232,11 @@ unbox-primitive@^1.0.1:
     has-bigints "^1.0.1"
     has-symbols "^1.0.2"
     which-boxed-primitive "^1.0.2"
+
+undici-types@~6.21.0:
+  version "6.21.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.21.0.tgz#691d00af3909be93a7faa13be61b3a5b50ef12cb"
+  integrity sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"

@@ -1,12 +1,14 @@
 import {Compile, TemplateModule} from "logimat";
 import * as Path from "path";
 import * as graphgame from "graphgame";
+import * as calculatoros from "calculatoros";
 import {DragMode, ExpressionState, ItemState} from "../desmosState";
 import {readFile} from "./worker-files";
 
 let simplificationMap: Record<string, string> = {};
 let importMap: Record<string, TemplateModule | string> = {
-    graphgame: <TemplateModule><unknown>graphgame
+    graphgame: <TemplateModule><unknown>graphgame,
+    calculatoros: <TemplateModule><unknown>calculatoros,
 };
 
 let oldMain = "";
@@ -170,6 +172,7 @@ export const ResetPath = (path: string) => {
 export const ResetImports = () => {
     //Delete all imports if a large change has occurred (git clone/pull, etc) or if the main changed.
     importMap = {
-        graphgame: <TemplateModule><unknown>graphgame
+        graphgame: <TemplateModule><unknown>graphgame,
+        calculatoros: <TemplateModule><unknown>calculatoros,
     };
 }
