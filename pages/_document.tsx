@@ -10,7 +10,7 @@ export default class Doc extends Document {
         return (
             <Html lang="en">
                 <Head>
-                    <script src="https://www.desmos.com/api/v1.9/calculator.js?apiKey=1030b80b9dcd49bfbec8bbd40b383837"/>
+                    <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=1030b80b9dcd49bfbec8bbd40b383837"/>
                     <link href="https://cdnjs.cloudflare.com/ajax/libs/devextreme/21.2.4/css/dx.dark.css" rel="stylesheet"/>
                 </Head>
                 <body>
